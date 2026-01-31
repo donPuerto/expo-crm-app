@@ -6,40 +6,54 @@ export default function WelcomeScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
-        {/* Logo */}
-        <View style={styles.logo}>
-          <Text style={styles.logoText}>✨</Text>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.iconContainer}>
+            <Text style={styles.iconText}>✨</Text>
+          </View>
+          <Text style={styles.appName}>Don Puerto CRM</Text>
+          <Text style={styles.tagline}>Your Intelligent Business{'\n'}Analytics Solutions</Text>
         </View>
 
-        {/* Title */}
-        <Text style={styles.title}>Welcome to the ultimate</Text>
-        <Text style={styles.titleBlue}>freud UI Kit!</Text>
+        {/* Features */}
+        <View style={styles.featuresContainer}>
+          <View style={styles.featureCard}>
+            <Text style={styles.featureIcon}>📊</Text>
+            <View style={styles.featureContent}>
+              <Text style={styles.featureTitle}>Real-time Analytics</Text>
+              <Text style={styles.featureDesc}>Track your business performance</Text>
+            </View>
+          </View>
 
-        {/* Subtitle */}
-        <Text style={styles.subtitle}>
-          Your mindful mental health AI companion{'\n'}for everyone, anywhere 🌱
-        </Text>
+          <View style={styles.featureCard}>
+            <Text style={styles.featureIcon}>👥</Text>
+            <View style={styles.featureContent}>
+              <Text style={styles.featureTitle}>Customer Management</Text>
+              <Text style={styles.featureDesc}>Organize all your contacts</Text>
+            </View>
+          </View>
 
-        {/* Illustration Placeholder */}
-        <View style={styles.illustration}>
-          <Text style={styles.emoji}>👩‍💼</Text>
-          <View style={[styles.decoration, styles.decoration1]} />
-          <View style={[styles.decoration, styles.decoration2]} />
-          <View style={[styles.decoration, styles.decoration3]} />
+          <View style={styles.featureCard}>
+            <Text style={styles.featureIcon}>⚡</Text>
+            <View style={styles.featureContent}>
+              <Text style={styles.featureTitle}>Smart Automation</Text>
+              <Text style={styles.featureDesc}>Save time with AI workflows</Text>
+            </View>
+          </View>
         </View>
 
-        {/* Get Started Button */}
-        <Link href="/(tabs)" asChild>
-          <Pressable style={styles.button}>
-            <Text style={styles.buttonText}>Get Started →</Text>
+        {/* CTA Button */}
+        <Link href={'/(auth)/sign-in' as never} asChild>
+          <Pressable style={styles.primaryButton}>
+            <Text style={styles.primaryButtonText}>Sign In to Continue →</Text>
           </Pressable>
         </Link>
 
-        {/* Sign In Link */}
-        <View style={styles.signInRow}>
-          <Text style={styles.signInText}>Already have an account? </Text>
-          <Link href="/(tabs)">
-            <Text style={styles.signInLink}>Sign In</Text>
+        {/* Footer */}
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Don&lsquo;t have an account? </Text>
+          <Link href={'/(auth)/sign-up' as never}>
+            <Text style={styles.footerLink}>Create Account</Text>
           </Link>
         </View>
       </View>
@@ -64,22 +78,22 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 80,
     height: 80,
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#6366f1',
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
-    shadowColor: '#3b82f6',
+    shadowColor: '#6366f1',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
   },
   iconText: {
-    fontSize: 40,
+    fontSize: 48,
   },
   appName: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#1e293b',
     marginBottom: 8,
@@ -88,6 +102,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#64748b',
     textAlign: 'center',
+    lineHeight: 24,
   },
   featuresContainer: {
     marginBottom: 40,
@@ -109,56 +124,48 @@ const styles = StyleSheet.create({
     fontSize: 32,
     marginRight: 16,
   },
+  featureContent: {
+    flex: 1,
+  },
   featureTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#1e293b',
     marginBottom: 4,
-    flex: 1,
   },
   featureDesc: {
     fontSize: 14,
     color: '#64748b',
-    position: 'absolute',
-    left: 76,
-    bottom: 20,
-  },
-  ctaContainer: {
-    gap: 12,
-    marginBottom: 32,
   },
   primaryButton: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#6366f1',
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
-    shadowColor: '#3b82f6',
+    shadowColor: '#6366f1',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
+    marginBottom: 24,
   },
   primaryButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: '600',
   },
-  secondaryButton: {
-    backgroundColor: '#fff',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#e2e8f0',
-  },
-  secondaryButtonText: {
-    color: '#3b82f6',
-    fontSize: 18,
-    fontWeight: '600',
-  },
   footer: {
-    textAlign: 'center',
-    color: '#94a3b8',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footerText: {
+    color: '#64748b',
     fontSize: 14,
+  },
+  footerLink: {
+    color: '#6366f1',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
