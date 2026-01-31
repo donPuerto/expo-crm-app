@@ -12,15 +12,15 @@ interface DashboardWrapperProps {
 export default function DashboardWrapper({
   children,
   showSidebar = true,
-  showTopbar = true,
+  showTopbar = false,
 }: DashboardWrapperProps) {
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
 
   return (
     <View style={styles.container}>
-      {/* Topbar */}
-      {showTopbar && <Topbar />}
+      {/* Topbar only for larger layouts */}
+      {showTopbar && !isMobile && <Topbar />}
 
       <View style={styles.mainContainer}>
         {/* Sidebar - Hide on mobile */}
