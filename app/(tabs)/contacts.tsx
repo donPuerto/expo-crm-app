@@ -1,1 +1,1 @@
-export { default } from '../(dashboard)/contacts/index';
+export { default } from '../(crm)/contacts/index';

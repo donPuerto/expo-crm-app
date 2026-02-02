@@ -1,1 +1,1 @@
-export { default } from '../(dashboard)/leads/index';
+export { default } from '../(crm)/leads/index';

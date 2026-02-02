@@ -1,0 +1,433 @@
+# Expo CRM App — Cursor Rules (authoritative)
+
+## Tech stack (do not assume alternatives)
+- Expo SDK 54
+- Expo Router v6 (file-based routing + typed routes)
+- TypeScript strict + path aliases:
+  - `@/*` → `./src/*` (for source code)
+  - `~assets/*` → `./assets/*` (for static assets)
+- React 19, New Architecture enabled, React Compiler enabled
+- **Targets: iOS / Android ONLY** (web is not a target platform for this app)
+
+## Standard project structure (must follow)
+- Routing stays in /app only (Expo Router).
+- Non-route code lives in /src:
+  - src/components: reusable components (themed/, ui/, dashboard/)
+  - src/features: feature modules (crm/, dashboard/, etc.)
+  - src/store: app-wide Zustand stores only
+  - src/hooks: shared hooks only
+  - src/lib: utilities (api client, formatters)
+  - src/types: shared types
+
+## Dashboard requirement (must implement this way)
+- Dashboards are reusable templates:
+  - Use a shared template component (e.g., DashboardShell) under src/components/dashboard/.
+  - Each dashboard screen in app/(dashboards) should be thin and compose the template.
+  - Dashboard-specific layout/content should be driven by config/definitions under src/features/dashboard/definitions/.
+- Support multiple dashboards (sales, ops, finance, etc.) without duplicating layout code.
+
+## Non-negotiable architecture rules
+- Use Expo Router primitives (router, Link, useLocalSearchParams). Do not switch to React Navigation patterns.
+- Shared/global state MUST use Zustand. Do NOT use React Context for shared/global state.
+- Follow existing theming system:
+  - Colors in @/constants/theme (or existing constants/theme.ts)
+  - useThemeColor hook
+  - ThemedView/ThemedText with lightColor/darkColor props
+- Use `@/*` imports for source code and `~assets/*` for assets; avoid deep relative imports.
+- Do not introduce new libraries unless explicitly requested.
+
+## Icons (MANDATORY)
+
+### Use Lucide Icons Only
+- **MUST use Lucide icons** from `lucide-react-native` for all icon needs
+- **DO NOT use** `@expo/vector-icons` or MaterialIcons
+- **DO NOT use** emojis for icons
+- Use the shadcn `Icon` component wrapper from `@/components/ui/icon` for consistent styling
+
+### Icon Usage Pattern
+```typescript
+import { BarChart3, Users, Zap } from 'lucide-react-native';
+import { Icon } from '@/components/ui/icon';
+
+// ✅ Correct - Use Lucide icons with Icon wrapper
+<Icon as={BarChart3} size={24} color={primaryColor} />
+
+// ❌ Wrong - Don't use MaterialIcons
+import { MaterialIcons } from '@expo/vector-icons';
+<MaterialIcons name="bar-chart" size={24} color={primaryColor} />
+```
+
+### Available Lucide Icons
+- Browse available icons at: https://lucide.dev/icons/
+- Common icons: `BarChart3`, `Users`, `Zap`, `Settings`, `Home`, `Search`, `Bell`, `Mail`, etc.
+- Import only the icons you need: `import { IconName } from 'lucide-react-native'`
+
+### Icon Component Props
+- `as`: The Lucide icon component (required)
+- `size`: Icon size in pixels (default: 14)
+- `color`: Icon color (use theme colors via `useThemeColor`)
+- `className`: Optional Tailwind classes for additional styling
+
+## Platform Targets
+
+**IMPORTANT**: This app targets **iOS and Android ONLY**. Web is not a production target.
+
+- **Primary targets**: iOS and Android native apps
+- **Web**: Not a target platform (web-specific code may exist for development/testing but should not be prioritized)
+- **Platform checks**: Use `Platform.OS === 'ios'` or `Platform.OS === 'android'` when needed
+- **Web-specific code**: Can be kept for development purposes but is not required for production
+
+## Common Issues and Solutions
+
+### TypeScript Errors with Shadcn Components
+
+**Error**: `Property 'title' does not exist on type...` or similar prop errors with shadcn components
+
+**Cause**: Shadcn components follow a composition pattern. Components like `Collapsible`, `Accordion`, etc. don't accept props like `title` directly. Instead, they use child components.
+
+**Solution**: 
+- **Collapsible**: Use `CollapsibleTrigger` and `CollapsibleContent` as children:
+  ```typescript
+  // ❌ Wrong
+  <Collapsible title="My Title">
+    <Text>Content</Text>
+  </Collapsible>
+  
+  // ✅ Correct
+  <Collapsible>
+    <CollapsibleTrigger>
+      <Text>My Title</Text>
+    </CollapsibleTrigger>
+    <CollapsibleContent>
+      <Text>Content</Text>
+    </CollapsibleContent>
+  </Collapsible>
+  ```
+- **Accordion**: Use `AccordionItem`, `AccordionTrigger`, and `AccordionContent`
+- **Always check component API**: Refer to shadcn/ui documentation or component source for proper usage
+- **Import all required sub-components**: Make sure to import all child components (e.g., `CollapsibleTrigger`, `CollapsibleContent`)
+
+### CSS Tailwind Warnings
+
+**Warning**: `Unknown at rule @tailwind css(unknownAtRules)`
+
+**Cause**: VS Code's CSS linter doesn't recognize Tailwind directives by default.
+
+**Solution**: 
+- This warning is **suppressed** in `.vscode/settings.json` with `"css.lint.unknownAtRules": "ignore"`
+- These warnings are **harmless** - Tailwind directives are processed by PostCSS/NativeWind
+- The warnings don't affect functionality - they're just linter noise
+- Can be safely ignored if suppression doesn't work
+
+### ARIA Hidden Warning (Web Development Only)
+**Note**: This only applies when testing on web during development. Since web is not a production target, these warnings can be ignored.
+
+**Error**: `Blocked aria-hidden on an element because its descendant retained focus. The focus must not be hidden from assistive technology users.`
+
+**Cause**: React Native Web's modal implementation sets `aria-hidden="true"` on background content to hide it from screen readers. However, the browser's accessibility checker warns when a focused element is inside an `aria-hidden` ancestor. This is a known limitation of React Native Web.
+
+**Solution**: 
+- Warnings are suppressed in `app/_layout.tsx` (LogBox and console) for development
+- Modal screens use `accessibilityViewIsModal` prop for better native accessibility
+- **Not applicable to iOS/Android** - this is a web-only browser-level warning
+- Can be safely ignored since web is not a production target
+- The warning does not affect functionality or actual accessibility - it's a false positive from the browser's accessibility checker
+
+### CSSStyleDeclaration Error (Web Development Only)
+**Note**: This only applies when testing on web during development.
+
+**Error**: `TypeError: Failed to set an indexed property [0] on 'CSSStyleDeclaration'`
+
+**Cause**: React Native Web's style handling with `Link` components.
+
+**Solution**: 
+- Use `Pressable` with `router.push()` instead of `Link` with `asChild` when child has inline styles
+- **Not applicable to iOS/Android** - this is a web-only issue
+- Can be safely ignored since web is not a production target
+
+## Theming System (MANDATORY)
+
+### Theme Colors Usage
+- **MUST use explicit theme colors** via `useThemeColor` hook for ALL color values
+- **DO NOT use hardcoded colors** (e.g., `#ffffff`, `#000000`) unless absolutely necessary
+- **DO NOT rely solely on CSS variables** - use `useThemeColor` hook for consistency across native and web
+- **Support both light and dark modes** - all components must work in both themes
+
+### Gradients (MANDATORY)
+- **MUST use gradients on full-page backgrounds** for visual consistency and modern design
+- **Use `GradientBackground` component** from `@/components/ui/gradient-background` for all page backgrounds
+- **Gradients MUST be subtle** - use very low opacity (3-8%) for a gentle, professional look
+- **Gradients MUST use theme colors** - derive gradient colors from `useThemeColor` hook
+- **Gradient colors should transition** subtly from background to slightly tinted background
+- **Support both light and dark modes** - gradients automatically adapt to theme
+- **Default gradient**: Component provides subtle default gradient if colors not specified
+
+### Gradient Usage Pattern
+```typescript
+import { GradientBackground } from '@/components/ui/gradient-background';
+import { addOpacityToHex } from '@/lib/utils';
+import { useThemeColor } from '@/hooks/use-theme-color';
+
+export default function MyScreen() {
+  const backgroundColor = useThemeColor({}, 'background');
+  const primaryColor = useThemeColor({}, 'tint');
+  
+  // Create subtle gradient colors from theme (3-8% opacity for subtlety)
+  const gradientColors = [
+    backgroundColor,
+    addOpacityToHex(primaryColor, 0.06), // Very subtle tint (6% opacity)
+    backgroundColor,
+  ];
+  
+  return (
+    <GradientBackground
+      colors={gradientColors}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      locations={[0, 0.5, 1]}
+    >
+      {/* Page content */}
+    </GradientBackground>
+  );
+}
+```
+
+### Gradient Guidelines
+- **Full-page screens**: Always use `GradientBackground` as the root container
+- **Gradient direction**: Typically diagonal (top-left to bottom-right: `start={{ x: 0, y: 0 }}, end={{ x: 1, y: 1 }}`)
+- **Subtlety is key**: Use 3-8% opacity for primary color tints - gradients should be barely noticeable but add depth
+- **Color stops**: Use 2-3 colors for smooth, subtle transitions
+- **Opacity**: Use `addOpacityToHex()` utility for consistent opacity handling (0.03-0.08 range)
+- **Locations**: Optional but recommended for precise color placement (e.g., `[0, 0.5, 1]` for 3 colors)
+- **Default behavior**: If no colors provided, component uses subtle default gradient
+
+### Theme Color Hook Pattern
+```typescript
+import { useThemeColor } from '@/hooks/use-theme-color';
+
+export default function MyComponent() {
+  const backgroundColor = useThemeColor({}, 'background');
+  const textColor = useThemeColor({}, 'text');
+  const primaryColor = useThemeColor({}, 'tint');
+  const cardBackground = useThemeColor({}, 'card');
+  const borderColor = useThemeColor({}, 'border');
+  
+  return (
+    <View style={{ backgroundColor, borderColor }}>
+      <Text style={{ color: textColor }}>Content</Text>
+    </View>
+  );
+}
+```
+
+### Available Theme Colors
+- `background` - Main background color
+- `text` - Primary text color
+- `tint` - Primary accent/brand color
+- `card` - Card/container background
+- `border` - Border color
+- `icon` - Icon color
+- `success` - Success state color
+- `warning` - Warning state color
+- `error` - Error state color
+- `tabIconDefault` - Unselected tab icon
+- `tabIconSelected` - Selected tab icon
+
+### Styling Guidelines
+- Use `StyleSheet.create` with theme colors for native components
+- Use `className` with Tailwind classes for React Native Reusables components (they handle theming via CSS variables)
+- When mixing both, prefer `useThemeColor` for explicit colors in StyleSheet
+- Always test in both light and dark modes
+
+### Typography (Fonts) - MANDATORY
+
+#### Dynamic Font System
+- **Font preferences are stored in Zustand store** (`src/store/font-store.ts`) with persistence
+- **Use `useFont()` hook** to access current font settings and apply them dynamically
+- **Font family options**: `Inter` (default), `Roboto`, `OpenSans`, `System`
+- **Font scale**: 0.8 to 1.5 (80% to 150% of base size)
+- **Font changes apply globally** - all components using `useFont()` will update automatically
+
+#### Font Weights (Inter)
+- Regular (400): `Inter_400Regular` - use for body text
+- Medium (500): `Inter_500Medium` - use for medium emphasis
+- SemiBold (600): `Inter_600SemiBold` - use for headings, buttons, emphasis
+- Bold (700): `Inter_700Bold` - use for titles, strong emphasis
+
+#### Usage Patterns
+- **ThemedText component**: Automatically uses dynamic font via `useFont()` hook
+- **React Native Reusables Text component**: Uses `font-sans` class (handled by Tailwind)
+- **Custom components**: Use `useFont()` hook to get `fontFamily` and `getScaledFontSize()`:
+  ```typescript
+  import { useFont } from '@/hooks/use-font';
+  
+  const { fontFamily, getScaledFontSize } = useFont();
+  const styles = StyleSheet.create({
+    text: {
+      fontFamily,
+      fontSize: getScaledFontSize(16), // Scales with user preference
+    },
+  });
+  ```
+- **iOS/Android**: Fonts are loaded via `@expo-google-fonts/inter` in root `_layout.tsx`
+- **Web (dev only)**: Fonts are loaded via Google Fonts import in `global.css` (for development testing only)
+- **Font loading**: Fonts are loaded before app renders (splash screen prevents auto-hide until fonts load)
+
+#### Font Store API
+```typescript
+import { useFontStore } from '@/store/font-store';
+
+const { fontFamily, fontScale, setFontFamily, setFontScale, resetFontSettings } = useFontStore();
+```
+
+#### DO NOT use hardcoded font families - always use `useFont()` hook for dynamic font support
+
+## State Management with Zustand (MANDATORY)
+
+### When to use Zustand
+- **MUST use Zustand** for:
+  - App-wide shared state (user auth, theme preferences, global settings)
+  - Feature-level state shared across multiple screens (CRM data, user management)
+  - Complex state that needs persistence or middleware
+- **DO NOT use** React Context for shared/global state
+- **DO NOT use** prop drilling for state that's shared across 3+ components
+
+### Zustand Store Structure
+- **App-wide stores**: Place in `src/store/` (e.g., `src/store/auth-store.ts`, `src/store/theme-store.ts`)
+- **Feature-level stores**: Place in `src/features/{feature}/store/` (e.g., `src/features/crm/store/leads-store.ts`)
+- **Store naming**: Use `-store.ts` suffix (e.g., `users-store.ts`, `leads-store.ts`)
+
+### Zustand Store Pattern
+```typescript
+import { create } from 'zustand';
+
+interface StoreState {
+  // State
+  items: Item[];
+  isLoading: boolean;
+  // Actions
+  addItem: (item: Item) => void;
+  updateItem: (id: string, item: Partial<Item>) => void;
+  deleteItem: (id: string) => void;
+  fetchItems: () => Promise<void>;
+}
+
+export const useStore = create<StoreState>((set, get) => ({
+  // Initial state
+  items: [],
+  isLoading: false,
+  // Actions
+  addItem: (item) => set((state) => ({ items: [...state.items, item] })),
+  updateItem: (id, updates) =>
+    set((state) => ({
+      items: state.items.map((item) => (item.id === id ? { ...item, ...updates } : item)),
+    })),
+  deleteItem: (id) =>
+    set((state) => ({ items: state.items.filter((item) => item.id !== id) })),
+  fetchItems: async () => {
+    set({ isLoading: true });
+    // Fetch logic here
+    set({ isLoading: false });
+  },
+}));
+```
+
+### Usage Guidelines
+- **Selective subscriptions**: Use selectors to prevent unnecessary re-renders
+  ```typescript
+  // ✅ Good - only re-renders when items change
+  const items = useStore((state) => state.items);
+  
+  // ❌ Bad - re-renders on any state change
+  const { items } = useStore();
+  ```
+- **Actions**: Keep actions pure and predictable
+- **Async actions**: Use async/await in Zustand actions
+- **Persistence**: Use `zustand/middleware/persist` for state that needs to survive app restarts
+- **DevTools**: Use `zustand/middleware/devtools` in development
+
+### Examples
+- User management: `src/features/crm/store/users-store.ts`
+- Leads management: `src/features/crm/store/leads-store.ts`
+- Theme preferences: `src/store/theme-store.ts`
+
+## How you must operate
+- Before proposing a fix, read the relevant files. Do not guess file contents or paths.
+- If you lack information, ask ONE targeted question before coding.
+- Prefer minimal diffs. No refactors unless explicitly requested.
+- When editing, output a git diff when possible.
+- When changing behavior, list touched files briefly.
+
+## Expo/RN constraints
+- **Platform targets**: iOS and Android ONLY (web is not a production target)
+- Do not use web-only APIs (window/document) unless file is .web.tsx (and only for development)
+- Use .ios.tsx/.android.tsx for platform variants when needed
+- Use `Platform.OS === 'ios'` or `Platform.OS === 'android'` for platform checks
+- Web-specific code (`.web.tsx` files) may exist for development but is not required
+- Prioritize iOS and Android implementations over web compatibility
+
+
+
+Recommended structure for Expo Router + multiple dashboards
+
+This keeps routing in app/, and puts everything else in src/ (common best practice).
+
+.
+├── app/
+│   ├── _layout.tsx
+│   ├── (tabs)/
+│   │   ├── _layout.tsx
+│   │   ├── index.tsx                 # home tab
+│   │   └── explore.tsx
+│   ├── (auth)/
+│   │   ├── _layout.tsx
+│   │   ├── sign-in.tsx
+│   │   └── sign-up.tsx
+│   ├── (dashboards)/
+│   │   ├── _layout.tsx
+│   │   ├── sales.tsx                 # Dashboard: Sales
+│   │   ├── ops.tsx                   # Dashboard: Ops
+│   │   └── finance.tsx               # Dashboard: Finance
+│   └── modal.tsx
+│
+├── src/
+│   ├── components/
+│   │   ├── themed/                   # your ThemedView/ThemedText wrappers
+│   │   ├── ui/                       # generic reusable UI (Button, Card, Input)
+│   │   ├── dashboard/                # dashboard building blocks
+│   │   │   ├── DashboardShell.tsx     # reusable template/shell
+│   │   │   ├── DashboardHeader.tsx
+│   │   │   ├── DashboardGrid.tsx
+│   │   │   └── widgets/
+│   │   │       ├── StatCard.tsx
+│   │   │       ├── ChartCard.tsx
+│   │   │       └── ActivityList.tsx
+│   │   └── forms/
+│   │
+│   ├── features/                     # domain modules (best for scaling)
+│   │   ├── crm/
+│   │   │   ├── api/
+│   │   │   ├── components/
+│   │   │   ├── hooks/
+│   │   │   ├── store/                # feature-level zustand
+│   │   │   └── types.ts
+│   │   └── dashboard/
+│   │       ├── definitions/          # configs for dashboards
+│   │       │   ├── sales.ts
+│   │       │   ├── ops.ts
+│   │       │   └── finance.ts
+│   │       ├── utils/
+│   │       └── types.ts
+│   │
+│   ├── store/                        # app-wide zustand stores only
+│   ├── hooks/                        # shared hooks only
+│   ├── lib/                          # helpers (http client, date, formatting)
+│   ├── constants/                    # theme, env, etc (keep your theme here or root)
+│   ├── types/
+│   └── assets/                       # optional if you want src/assets (Expo can also keep root assets)
+│
+├── constants/                         # keep if already existing (your theme)
+├── assets/
+├── tsconfig.json
+├── app.json
+└── package.json
