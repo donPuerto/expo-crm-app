@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 
-import { Sidebar, Topbar } from '@/components/dashboard';
+import Sidebar from '@/components/dashboard/sidebar';
+import Topbar from '@/components/dashboard/topbar';
 
 interface DashboardWrapperProps {
   children: React.ReactNode;

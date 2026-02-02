@@ -1,0 +1,7 @@
+/* Purpose: keep Tailwind layers centralized for global styling. */
+/* Tailwind directives require PostCSS/nativewind processing. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Keep CSS minimal; app-wide rules should follow project instructions. */

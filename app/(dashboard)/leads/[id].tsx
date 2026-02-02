@@ -1,6 +1,9 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+
+const cardShadow = { boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)' };
+const androidCardElevation = Platform.OS === 'android' ? { elevation: 2 } : {};
 
 type Lead = {
   id: string;
@@ -143,11 +146,8 @@ const styles = StyleSheet.create({
     margin: 16,
     borderRadius: 12,
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    ...cardShadow,
+    ...androidCardElevation,
   },
   name: {
     fontSize: 24,

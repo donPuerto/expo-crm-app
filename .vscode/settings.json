@@ -16,5 +16,11 @@
   },
   "files.associations": {
     "*.tsx": "typescriptreact"
-  }
+  },
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "tailwindCSS.experimental.classRegex": [
+    ["className\\s*:\\s*['\"`]([^'\"`]*)['\"`]", "([a-zA-Z0-9\\-:./]+)"]
+  ]
 }

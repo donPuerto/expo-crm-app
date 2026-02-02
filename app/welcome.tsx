@@ -1,57 +1,80 @@
 import { Link } from 'expo-router';
-import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { useThemeColor } from '@/hooks/use-theme-color';
+
+// Purpose: render the CRM welcome/landing experience.
 export default function WelcomeScreen() {
+  // Purpose: derive theme-aware colors for light/dark modes.
+  const backgroundColor = useThemeColor({ light: '#f8fafc', dark: '#0b1220' }, 'background');
+  const cardBackground = useThemeColor({ light: '#ffffff', dark: '#111827' }, 'background');
+  const headingColor = useThemeColor({ light: '#1e293b', dark: '#e2e8f0' }, 'text');
+  const mutedColor = useThemeColor({ light: '#64748b', dark: '#94a3b8' }, 'text');
+
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor }]}>
       <View style={styles.content}>
-        {/* Header */}
+        {/* Purpose: header/branding section */}
         <View style={styles.header}>
           <View style={styles.iconContainer}>
             <Text style={styles.iconText}>✨</Text>
           </View>
-          <Text style={styles.appName}>Don Puerto CRM</Text>
-          <Text style={styles.tagline}>Your Intelligent Business{'\n'}Analytics Solutions</Text>
+          <Text style={[styles.appName, { color: headingColor }]}>Don Puerto CRM</Text>
+          <Text style={[styles.tagline, { color: mutedColor }]}>
+            Your Intelligent Business{'\n'}Analytics Solutions
+          </Text>
         </View>
 
-        {/* Features */}
+        {/* Purpose: feature highlights */}
         <View style={styles.featuresContainer}>
-          <View style={styles.featureCard}>
+          <View style={[styles.featureCard, { backgroundColor: cardBackground }]}>
             <Text style={styles.featureIcon}>📊</Text>
             <View style={styles.featureContent}>
-              <Text style={styles.featureTitle}>Real-time Analytics</Text>
-              <Text style={styles.featureDesc}>Track your business performance</Text>
+              <Text style={[styles.featureTitle, { color: headingColor }]}>
+                Real-time Analytics
+              </Text>
+              <Text style={[styles.featureDesc, { color: mutedColor }]}>
+                Track your business performance
+              </Text>
             </View>
           </View>
 
-          <View style={styles.featureCard}>
+          <View style={[styles.featureCard, { backgroundColor: cardBackground }]}>
             <Text style={styles.featureIcon}>👥</Text>
+
             <View style={styles.featureContent}>
-              <Text style={styles.featureTitle}>Customer Management</Text>
-              <Text style={styles.featureDesc}>Organize all your contacts</Text>
+              <Text style={[styles.featureTitle, { color: headingColor }]}>
+                Customer Management
+              </Text>
+              <Text style={[styles.featureDesc, { color: mutedColor }]}>
+                Organize all your contacts
+              </Text>
             </View>
           </View>
 
-          <View style={styles.featureCard}>
+          <View style={[styles.featureCard, { backgroundColor: cardBackground }]}>
             <Text style={styles.featureIcon}>⚡</Text>
             <View style={styles.featureContent}>
-              <Text style={styles.featureTitle}>Smart Automation</Text>
-              <Text style={styles.featureDesc}>Save time with AI workflows</Text>
+              <Text style={[styles.featureTitle, { color: headingColor }]}>Smart Automation</Text>
+              <Text style={[styles.featureDesc, { color: mutedColor }]}>
+                Save time with AI workflows
+              </Text>
             </View>
           </View>
         </View>
 
-        {/* CTA Button */}
+        {/* Purpose: primary call-to-action */}
         <Link href={'/(auth)/sign-in' as never} asChild>
           <Pressable style={styles.primaryButton}>
             <Text style={styles.primaryButtonText}>Sign In to Continue →</Text>
           </Pressable>
         </Link>
 
-        {/* Footer */}
+        {/* Purpose: secondary call-to-action */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Don&lsquo;t have an account? </Text>
+          <Text style={[styles.footerText, { color: mutedColor }]}>
+            Don&lsquo;t have an account?{' '}
+          </Text>
           <Link href={'/(auth)/sign-up' as never}>
             <Text style={styles.footerLink}>Create Account</Text>
           </Link>
@@ -61,10 +84,10 @@ export default function WelcomeScreen() {
   );
 }
 
+// Purpose: define styles for the welcome screen layout.
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
   },
   content: {
     flex: 1,
@@ -80,14 +103,9 @@ const styles = StyleSheet.create({
     height: 80,
     backgroundColor: '#6366f1',
     borderRadius: 20,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 20,
-    shadowColor: '#6366f1',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
   },
   iconText: {
     fontSize: 48,
@@ -95,12 +113,10 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#1e293b',
     marginBottom: 8,
   },
   tagline: {
     fontSize: 16,
-    color: '#64748b',
     textAlign: 'center',
     lineHeight: 24,
   },
@@ -108,17 +124,11 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   featureCard: {
-    backgroundColor: '#fff',
     padding: 20,
     borderRadius: 16,
     marginBottom: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 3,
   },
   featureIcon: {
     fontSize: 32,
@@ -130,23 +140,16 @@ const styles = StyleSheet.create({
   featureTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1e293b',
     marginBottom: 4,
   },
   featureDesc: {
     fontSize: 14,
-    color: '#64748b',
   },
   primaryButton: {
     backgroundColor: '#6366f1',
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
-    shadowColor: '#6366f1',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
     marginBottom: 24,
   },
   primaryButtonText: {
@@ -160,7 +163,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerText: {
-    color: '#64748b',
     fontSize: 14,
   },
   footerLink: {
