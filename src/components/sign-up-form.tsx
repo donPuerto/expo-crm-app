@@ -6,16 +6,84 @@ import { Separator } from '@/components/ui/separator';
 import { Text } from '@/components/ui/text';
 import { router } from 'expo-router';
 import * as React from 'react';
-import { TextInput, View, StyleSheet } from 'react-native';
+import { TextInput, View, StyleSheet, Alert } from 'react-native';
 
 export function SignUpForm() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
   const passwordInputRef = React.useRef<TextInput>(null);
-  const [error] = React.useState<{ email?: string; password?: string }>({});
+  const [error, setError] = React.useState<{ email?: string; password?: string }>({});
 
-  function onSubmit() {
-    // UI-only: no auth logic yet
+  async function onSubmit() {
+    // Reset errors
+    setError({});
+
+    // Check if both fields are filled
+    if (!email && !password) {
+      setError({
+        email: 'Email is required',
+        password: 'Password is required',
+      });
+      return;
+    }
+
+    // Validate email
+    if (!email || email.trim() === '') {
+      setError({ email: 'Email is required' });
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      setError({ email: 'Please enter a valid email address' });
+      return;
+    }
+
+    // Validate password
+    if (!password || password.trim() === '') {
+      setError({ password: 'Password is required' });
+      return;
+    }
+
+    if (password.length < 8) {
+      setError({ password: 'Password must be at least 8 characters' });
+      return;
+    }
+
+    // Simulate API call
+    setIsLoading(true);
+
+    try {
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // For demo: accept any email/password that meets validation
+      // In production, this would be an actual API call
+      console.log('Sign up successful:', { email: email.trim() });
+
+      // Show success message
+      Alert.alert('Success', 'Account created successfully!', [
+        {
+          text: 'OK',
+          onPress: () => {
+            // Option 1: Navigate to email verification
+            // router.push(`/(auth)/sign-up/verify-email?email=${email}`);
+
+            // Option 2: Navigate directly to dashboard
+            router.replace('/(dashboards)/');
+          },
+        },
+      ]);
+    } catch (err) {
+      // Handle error
+      setError({
+        email: 'Sign up failed. This email may already be in use.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function onEmailSubmitEditing() {
@@ -73,8 +141,12 @@ export function SignUpForm() {
           ) : null}
         </View>
 
-        <Button style={styles.submitButton} onPress={onSubmit}>
-          <Text>Continue</Text>
+        <Button
+          style={styles.submitButton}
+          onPress={onSubmit}
+          disabled={isLoading || !email.trim() || !password.trim()}
+        >
+          <Text>{isLoading ? 'Creating account...' : 'Continue'}</Text>
         </Button>
       </View>
 
