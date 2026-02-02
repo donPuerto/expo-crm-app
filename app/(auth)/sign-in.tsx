@@ -26,7 +26,6 @@ export default function SignInScreen() {
     </GradientBackground>
   );
 }
-r;
 
 const styles = StyleSheet.create({
   scrollContent: {
