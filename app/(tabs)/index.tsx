@@ -1,387 +1,763 @@
-import React, { useEffect } from 'react';
-import { FlatList, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
+import * as React from 'react';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  StatusBar,
+  useColorScheme as useRNColorScheme,
+  RefreshControl,
+  Modal,
+  Appearance,
+  Animated,
+  Dimensions,
+} from 'react-native';
+import {
+  Plus,
+  X as XIcon,
+  Check,
+  Menu,
+  Sun,
+  Moon,
+  Home as HomeIcon,
+  Users,
+  Settings,
+} from 'lucide-react-native';
 
-import { Link } from 'expo-router';
-
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { Text } from '@/components/ui/text';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { GradientBackground } from '@/components/ui/gradient-background';
+import { Avatar } from '@/components/ui/avatar';
+import { Label } from '@/components/ui/label';
+import { Icon } from '@/components/ui/icon';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { createShadowStyle } from '@/lib/shadow-styles';
+import { useFont } from '@/hooks/use-font';
+import { addOpacityToHex } from '@/lib/utils';
 
-type Kpi = { label: string; value: string; trend?: string };
-type Activity = { id: string; title: string; meta: string; type: 'lead' | 'contact' | 'task' };
-type Task = { id: string; title: string; due: string; status: 'today' | 'upcoming' | 'overdue' };
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const DRAWER_WIDTH = SCREEN_WIDTH * 0.75;
 
-const KPI_CARDS: Kpi[] = [
-  { label: 'Open Leads', value: '24', trend: '+6 this week' },
-  { label: 'Active Contacts', value: '128', trend: '12 with tasks' },
-  { label: 'Meetings', value: '8', trend: '3 today' },
+// Mock data
+const SALES_DATA = {
+  total: '$8,681.97',
+  period: 'This month',
+  deals: {
+    total: 21,
+    won: { count: 16, value: '$291.23' },
+    lost: { count: 5, value: '$122.97' },
+  },
+};
+
+const UPCOMING_TASKS = [
+  { id: '1', title: 'Team briefing', type: 'Meeting', status: 'overdue', time: '09:00 am' },
+  { id: '2', title: 'Call with W.Warren', type: 'Call', status: 'planned', time: '09:00 am' },
+  { id: '3', title: 'Send email contracts', type: 'Meeting', status: 'planned', time: '09:00 am' },
+  { id: '4', title: 'Task with kismat', type: 'Task', status: 'overdue', time: '09:00 am' },
 ];
-
-const ACTIVITIES: Activity[] = [
-  { id: '1', title: 'Follow up with Acme Corp', meta: 'Lead due today', type: 'lead' },
-  { id: '2', title: 'Call Jane Smith', meta: 'Contact overdue 1d', type: 'contact' },
-  { id: '3', title: 'Prep demo deck', meta: 'Task tomorrow', type: 'task' },
-  { id: '4', title: 'Log notes for Northwind', meta: 'Lead updated 2h ago', type: 'lead' },
-];
-
-const TASKS: Task[] = [
-  { id: '1', title: 'Send proposal to Tech Inc', due: 'Today', status: 'today' },
-  { id: '2', title: 'Confirm meeting with Bob', due: 'Tomorrow', status: 'upcoming' },
-  { id: '3', title: 'Update pipeline stages', due: 'Fri', status: 'upcoming' },
-  { id: '4', title: 'Call Jane about pricing', due: 'Overdue 1d', status: 'overdue' },
-];
-
-function AnimatedCard({ children, index }: { children: React.ReactNode; index: number }) {
-  const opacity = useSharedValue(0);
-  const translateY = useSharedValue(30);
-  const scale = useSharedValue(0.9);
-
-  useEffect(() => {
-    opacity.value = withDelay(index * 100, withTiming(1, { duration: 500 }));
-    translateY.value = withDelay(index * 100, withSpring(0, { damping: 15, stiffness: 100 }));
-    scale.value = withDelay(index * 100, withSpring(1, { damping: 15, stiffness: 100 }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ translateY: translateY.value }, { scale: scale.value }],
-  }));
-
-  return <Animated.View style={animatedStyle}>{children}</Animated.View>;
-}
-
-function AnimatedButton({
-  children,
-  onPress,
-  variant = 'primary',
-  index = 0,
-}: {
-  children: React.ReactNode;
-  onPress?: () => void;
-  variant?: 'primary' | 'secondary';
-  index?: number;
-}) {
-  const scale = useSharedValue(1);
-  const opacity = useSharedValue(0);
-  const borderColor = useThemeColor({}, 'border');
-  const tint = useThemeColor({}, 'tint');
-  const cardBg = useThemeColor({}, 'card');
-
-  useEffect(() => {
-    opacity.value = withDelay(index * 50, withTiming(1, { duration: 300 }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ scale: scale.value }],
-  }));
-
-  const handlePressIn = () => {
-    scale.value = withSpring(0.95, { damping: 15 });
-  };
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 15 });
-  };
-
-  return (
-    <Animated.View style={animatedStyle}>
-      <Pressable
-        onPress={onPress || (() => {})}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        style={[
-          styles.actionButton,
-          variant === 'primary'
-            ? { backgroundColor: tint }
-            : { backgroundColor: cardBg, borderWidth: 1, borderColor },
-          createShadowStyle({
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-            elevation: 2,
-          }),
-        ]}
-      >
-        {children}
-      </Pressable>
-    </Animated.View>
-  );
-}
 
 export default function HomeScreen() {
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const colorScheme = useRNColorScheme();
+  const slideAnim = React.useRef(new Animated.Value(-DRAWER_WIDTH)).current;
+
+  // Theme colors
   const backgroundColor = useThemeColor({}, 'background');
-  const cardBg = useThemeColor({}, 'card');
-  const borderColor = useThemeColor({}, 'border');
-  const tint = useThemeColor({}, 'tint');
   const textColor = useThemeColor({}, 'text');
+  const primaryColor = useThemeColor({}, 'tint');
+  const mutedColor = useThemeColor({}, 'icon');
+  const cardBackground = useThemeColor({}, 'card');
+  const borderColor = useThemeColor({}, 'border');
+
+  const { fontFamily } = useFont();
+
+  const isDark = colorScheme === 'dark';
+
+  // Animate drawer open/close
+  React.useEffect(() => {
+    Animated.spring(slideAnim, {
+      toValue: menuOpen ? 0 : -DRAWER_WIDTH,
+      useNativeDriver: true,
+      tension: 65,
+      friction: 11,
+    }).start();
+  }, [menuOpen, slideAnim]);
+
+  // Pull to refresh handler
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    // Simulate data fetching
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1500);
+  }, []);
+
+  // Toggle theme
+  const handleThemeToggle = () => {
+    const newColorScheme = isDark ? 'light' : 'dark';
+    Appearance.setColorScheme(newColorScheme);
+  };
+
+  // Close drawer
+  const closeDrawer = () => setMenuOpen(false);
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor }]}>
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        <AnimatedCard index={0}>
-          <ThemedText type="title" style={[styles.header, { color: textColor }]}>
-            CRM Home
-          </ThemedText>
-        </AnimatedCard>
+    <View style={[styles.container, { backgroundColor }]}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
 
-        <ThemedView style={styles.section}>
-          <ThemedText type="subtitle" style={styles.sectionTitle}>
-            KPIs
-          </ThemedText>
-          <View style={styles.kpiGrid}>
-            {KPI_CARDS.map((card, index) => (
-              <AnimatedCard key={card.label} index={index + 1}>
-                <ThemedView
-                  style={[
-                    styles.kpiCard,
+      {/* Sidebar Drawer */}
+      <Modal visible={menuOpen} transparent animationType="none" onRequestClose={closeDrawer}>
+        <View style={styles.drawerOverlay}>
+          {/* Overlay that closes drawer */}
+          <Pressable style={StyleSheet.absoluteFill} onPress={closeDrawer} />
+
+          {/* Drawer that slides in/out */}
+          <Animated.View
+            style={[
+              styles.drawerContainer,
+              { backgroundColor: cardBackground, transform: [{ translateX: slideAnim }] },
+            ]}
+            onStartShouldSetResponder={() => true}
+          >
+            {/* Company Header */}
+            <View style={[styles.companyHeader, { borderBottomColor: borderColor }]}>
+              <View style={styles.companyInfo}>
+                <Avatar fallback="Acme Inc." size={32} />
+                <Label style={[styles.companyName, { color: textColor }]}>Acme Inc.</Label>
+              </View>
+              <Pressable onPress={closeDrawer} style={styles.closeIconButton}>
+                <Icon as={XIcon} size={20} color={mutedColor} />
+              </Pressable>
+            </View>
+
+            {/* Quick Create Button */}
+            <View style={styles.quickCreateContainer}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.quickCreateButton,
+                  { backgroundColor: mutedColor, opacity: pressed ? 0.8 : 1 },
+                ]}
+                onPress={() => console.log('Quick create')}
+              >
+                <Icon as={Plus} size={18} color="#ffffff" />
+                <Label style={styles.quickCreateLabel}>Quick Create</Label>
+              </Pressable>
+            </View>
+
+            {/* Menu Items */}
+            <ScrollView style={styles.drawerContent} showsVerticalScrollIndicator={false}>
+              {/* Dashboard Section */}
+              <View style={styles.menuSection}>
+                <Label style={[styles.sectionHeader, { color: mutedColor }]}>Dashboard</Label>
+
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.menuItem,
                     {
-                      backgroundColor: cardBg,
-                      borderColor,
+                      backgroundColor: pressed
+                        ? addOpacityToHex(primaryColor, 0.08)
+                        : 'transparent',
                     },
                   ]}
+                  onPress={closeDrawer}
                 >
-                  <ThemedText type="defaultSemiBold" style={[styles.kpiValue, { color: tint }]}>
-                    {card.value}
-                  </ThemedText>
-                  <ThemedText style={styles.kpiLabel}>{card.label}</ThemedText>
-                  {card.trend ? (
-                    <ThemedText style={[styles.kpiTrend, { color: tint }]}>{card.trend}</ThemedText>
-                  ) : null}
-                </ThemedView>
-              </AnimatedCard>
+                  <Icon as={HomeIcon} size={20} color={textColor} />
+                  <Label style={[styles.menuLabel, { color: textColor }]}>Leads</Label>
+                </Pressable>
+
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.menuItem,
+                    {
+                      backgroundColor: pressed ? addOpacityToHex(mutedColor, 0.08) : 'transparent',
+                    },
+                  ]}
+                  onPress={closeDrawer}
+                >
+                  <Icon as={Users} size={20} color={textColor} />
+                  <Label style={[styles.menuLabel, { color: textColor }]}>Contacts</Label>
+                </Pressable>
+
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.menuItem,
+                    {
+                      backgroundColor: pressed ? addOpacityToHex(mutedColor, 0.08) : 'transparent',
+                    },
+                  ]}
+                  onPress={closeDrawer}
+                >
+                  <Icon as={HomeIcon} size={20} color={textColor} />
+                  <Label style={[styles.menuLabel, { color: textColor }]}>Opportunity</Label>
+                </Pressable>
+
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.menuItem,
+                    {
+                      backgroundColor: pressed ? addOpacityToHex(mutedColor, 0.08) : 'transparent',
+                    },
+                  ]}
+                  onPress={closeDrawer}
+                >
+                  <Icon as={Check} size={20} color={textColor} />
+                  <Label style={[styles.menuLabel, { color: textColor }]}>Tasks</Label>
+                </Pressable>
+              </View>
+            </ScrollView>
+
+            {/* Bottom Menu */}
+            <View style={[styles.bottomMenu, { borderTopColor: borderColor }]}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.bottomMenuItem,
+                  {
+                    backgroundColor: pressed ? addOpacityToHex(mutedColor, 0.08) : 'transparent',
+                  },
+                ]}
+                onPress={closeDrawer}
+              >
+                <Icon as={Settings} size={20} color={textColor} />
+                <Label style={[styles.menuLabel, { color: textColor }]}>Settings</Label>
+              </Pressable>
+
+              <Pressable
+                style={({ pressed }) => [
+                  styles.bottomMenuItem,
+                  {
+                    backgroundColor: pressed ? addOpacityToHex(mutedColor, 0.08) : 'transparent',
+                  },
+                ]}
+                onPress={handleThemeToggle}
+              >
+                <Icon as={isDark ? Sun : Moon} size={20} color={textColor} />
+                <Label style={[styles.menuLabel, { color: textColor }]}>Dark Mode</Label>
+              </Pressable>
+            </View>
+
+            {/* User Profile at Bottom */}
+            <Pressable
+              style={({ pressed }) => [
+                styles.drawerFooter,
+                {
+                  borderTopColor: borderColor,
+                  backgroundColor: pressed ? addOpacityToHex(primaryColor, 0.08) : 'transparent',
+                },
+              ]}
+              onPress={() => {
+                closeDrawer();
+                console.log('Navigate to user profile');
+              }}
+            >
+              <View style={styles.userAvatarContainer}>
+                <Avatar fallback="shadcn" size={36} />
+              </View>
+              <View style={styles.drawerUserInfo}>
+                <Label style={[styles.drawerUserName, { color: textColor }]}>shadcn</Label>
+                <Text variant="small" style={[styles.drawerUserEmail, { color: mutedColor }]}>
+                  m@example.com
+                </Text>
+              </View>
+              <View style={styles.userSettingsIconContainer}>
+                <Icon as={Settings} size={16} color={mutedColor} />
+              </View>
+            </Pressable>
+          </Animated.View>
+        </View>
+      </Modal>
+
+      {/* Header with gradient */}
+      <GradientBackground
+        colors={[primaryColor, addOpacityToHex(primaryColor, 0.9), primaryColor]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <View style={styles.headerContent}>
+          <View style={styles.headerRow}>
+            <Pressable onPress={() => setMenuOpen(!menuOpen)} style={styles.menuButton}>
+              <Menu size={24} color="#ffffff" />
+            </Pressable>
+            <Text variant="h3" style={[styles.headerTitle, { fontFamily, color: '#ffffff' }]}>
+              Home
+            </Text>
+            <Pressable onPress={handleThemeToggle} style={styles.themeButton}>
+              {isDark ? <Sun size={24} color="#ffffff" /> : <Moon size={24} color="#ffffff" />}
+            </Pressable>
+          </View>
+        </View>
+
+        {/* Sales Summary */}
+        <View style={styles.salesSummary}>
+          <View style={styles.salesHeader}>
+            <Text style={[styles.salesLabel, { fontFamily, color: '#ffffff' }]}>Sales summary</Text>
+            <Pressable style={styles.periodButton}>
+              <Text style={[styles.periodText, { fontFamily, color: '#ffffff' }]}>
+                {SALES_DATA.period}
+              </Text>
+            </Pressable>
+          </View>
+
+          <Text style={[styles.salesAmount, { fontFamily, color: '#ffffff' }]}>
+            {SALES_DATA.total}
+          </Text>
+
+          <View style={styles.statsRow}>
+            <View style={styles.statBox}>
+              <Text style={[styles.statValue, { fontFamily, color: '#ffffff' }]}>
+                {SALES_DATA.deals.total}
+              </Text>
+              <Text style={[styles.statLabel, { fontFamily, color: '#ffffff' }]}>total deals</Text>
+            </View>
+            <View style={styles.statBox}>
+              <Text style={[styles.statValue, { fontFamily, color: '#ffffff' }]}>
+                {SALES_DATA.deals.won.value}
+              </Text>
+              <Text style={[styles.statLabel, { fontFamily, color: '#ffffff' }]}>
+                {SALES_DATA.deals.won.count} won
+              </Text>
+            </View>
+            <View style={styles.statBox}>
+              <Text style={[styles.statValue, { fontFamily, color: '#ffffff' }]}>
+                {SALES_DATA.deals.lost.value}
+              </Text>
+              <Text style={[styles.statLabel, { fontFamily, color: '#ffffff' }]}>
+                {SALES_DATA.deals.lost.count} lost
+              </Text>
+            </View>
+          </View>
+        </View>
+      </GradientBackground>
+
+      {/* Content */}
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={primaryColor}
+            colors={[primaryColor]}
+          />
+        }
+      >
+        {/* New Activity Section */}
+        <View style={styles.section}>
+          <Text variant="h4" style={[styles.sectionTitle, { fontFamily, color: textColor }]}>
+            New activity for today
+          </Text>
+          <View style={styles.activityButtons}>
+            <Button
+              style={styles.activityButton}
+              onPress={() => {
+                /* Add Meeting */
+              }}
+            >
+              <View style={styles.activityButtonContent}>
+                <Plus size={20} color="#ffffff" />
+                <Text variant="default" style={styles.activityButtonText}>
+                  Meeting
+                </Text>
+              </View>
+            </Button>
+            <Button
+              style={styles.activityButton}
+              onPress={() => {
+                /* Add Task */
+              }}
+            >
+              <View style={styles.activityButtonContent}>
+                <Plus size={20} color="#ffffff" />
+                <Text variant="default" style={styles.activityButtonText}>
+                  Task
+                </Text>
+              </View>
+            </Button>
+            <Button
+              style={styles.activityButton}
+              onPress={() => {
+                /* Add Call */
+              }}
+            >
+              <View style={styles.activityButtonContent}>
+                <Plus size={20} color="#ffffff" />
+                <Text variant="default" style={styles.activityButtonText}>
+                  Call
+                </Text>
+              </View>
+            </Button>
+          </View>
+        </View>
+
+        {/* Upcoming Tasks */}
+        <View style={styles.section}>
+          <Text variant="h4" style={[styles.sectionTitle, { fontFamily, color: textColor }]}>
+            Upcoming tasks
+          </Text>
+          <View style={styles.tasksList}>
+            {UPCOMING_TASKS.map(task => (
+              <Card key={task.id} style={styles.taskCard}>
+                <CardContent style={styles.taskCardContent}>
+                  <View style={styles.taskLeft}>
+                    <View
+                      style={[
+                        styles.taskIcon,
+                        {
+                          backgroundColor:
+                            task.status === 'overdue'
+                              ? 'rgba(239, 68, 68, 0.1)'
+                              : 'rgba(59, 130, 246, 0.1)',
+                        },
+                      ]}
+                    >
+                      {task.status === 'overdue' ? (
+                        <XIcon size={20} color="#ef4444" />
+                      ) : (
+                        <Check size={20} color="#3b82f6" />
+                      )}
+                    </View>
+                    <View style={styles.taskInfo}>
+                      <Text
+                        variant="default"
+                        style={[styles.taskTitle, { fontFamily, color: textColor }]}
+                      >
+                        {task.title}
+                      </Text>
+                      <View style={styles.taskMeta}>
+                        <Text
+                          variant="small"
+                          style={[styles.taskType, { fontFamily, color: mutedColor }]}
+                        >
+                          {task.type}
+                        </Text>
+                        <Separator orientation="vertical" style={styles.separator} />
+                        <Text
+                          variant="small"
+                          style={[
+                            styles.taskStatus,
+                            {
+                              fontFamily,
+                              color: task.status === 'overdue' ? '#ef4444' : '#22c55e',
+                            },
+                          ]}
+                        >
+                          {task.status === 'overdue' ? 'Overdue' : 'Planned'}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                  <Text
+                    variant="small"
+                    style={[styles.taskTime, { fontFamily, color: mutedColor }]}
+                  >
+                    {task.time}
+                  </Text>
+                </CardContent>
+              </Card>
             ))}
           </View>
-        </ThemedView>
-
-        <ThemedView style={styles.section}>
-          <ThemedText type="subtitle" style={styles.sectionTitle}>
-            Quick actions
-          </ThemedText>
-          <View style={styles.actionsRow}>
-            <Link href="/(crm)/leads/add" asChild>
-              <AnimatedButton variant="primary" index={0}>
-                <ThemedText type="defaultSemiBold" style={styles.actionText}>
-                  Add Lead
-                </ThemedText>
-              </AnimatedButton>
-            </Link>
-            <Link href="/(crm)/contacts/add" asChild>
-              <AnimatedButton variant="primary" index={1}>
-                <ThemedText type="defaultSemiBold" style={styles.actionText}>
-                  Add Contact
-                </ThemedText>
-              </AnimatedButton>
-            </Link>
-            <Link href="/(tabs)/tasks" asChild>
-              <AnimatedButton variant="secondary" index={2}>
-                <ThemedText type="defaultSemiBold">View Tasks</ThemedText>
-              </AnimatedButton>
-            </Link>
-          </View>
-        </ThemedView>
-
-        <ThemedView style={styles.section}>
-          <ThemedText type="subtitle" style={styles.sectionTitle}>
-            Recent activity
-          </ThemedText>
-          <FlatList
-            data={ACTIVITIES}
-            keyExtractor={item => item.id}
-            renderItem={({ item, index: itemIndex }) => (
-              <AnimatedCard index={itemIndex + 4}>
-                <ThemedView
-                  style={[
-                    styles.listItem,
-                    {
-                      backgroundColor: cardBg,
-                      borderColor,
-                    },
-                    createShadowStyle({
-                      shadowColor: '#000',
-                      shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: 0.05,
-                      shadowRadius: 4,
-                      elevation: 2,
-                    }),
-                  ]}
-                >
-                  <View style={styles.listRow}>
-                    <ThemedText type="defaultSemiBold">{item.title}</ThemedText>
-                    <ThemedText style={[styles.badge, { backgroundColor: borderColor }]}>
-                      {item.type}
-                    </ThemedText>
-                  </View>
-                  <ThemedText style={styles.listMeta}>{item.meta}</ThemedText>
-                </ThemedView>
-              </AnimatedCard>
-            )}
-            scrollEnabled={false}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
-          />
-        </ThemedView>
-
-        <ThemedView style={styles.section}>
-          <View style={styles.sectionHeaderRow}>
-            <ThemedText type="subtitle" style={styles.sectionTitle}>
-              Upcoming tasks
-            </ThemedText>
-            <Link href="/(tabs)/tasks" asChild>
-              <Pressable>
-                <ThemedText style={[styles.link, { color: tint }]}>View all</ThemedText>
-              </Pressable>
-            </Link>
-          </View>
-          <FlatList
-            data={TASKS}
-            keyExtractor={item => item.id}
-            renderItem={({ item, index: itemIndex }) => (
-              <AnimatedCard index={itemIndex + 8}>
-                <ThemedView
-                  style={[
-                    styles.listItem,
-                    {
-                      backgroundColor: cardBg,
-                      borderColor,
-                    },
-                    createShadowStyle({
-                      shadowColor: '#000',
-                      shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: 0.05,
-                      shadowRadius: 4,
-                      elevation: 2,
-                    }),
-                  ]}
-                >
-                  <View style={styles.listRow}>
-                    <ThemedText type="defaultSemiBold">{item.title}</ThemedText>
-                    <ThemedText style={[styles.badge, { backgroundColor: borderColor }]}>
-                      {item.status}
-                    </ThemedText>
-                  </View>
-                  <ThemedText style={styles.listMeta}>{item.due}</ThemedText>
-                </ThemedView>
-              </AnimatedCard>
-            )}
-            scrollEnabled={false}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
-          />
-        </ThemedView>
+        </View>
       </ScrollView>
-    </ThemedView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 24,
   },
-  scroll: {
-    paddingBottom: 40,
+  // Drawer styles
+  drawerOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  drawerContainer: {
+    width: DRAWER_WIDTH,
+    height: '100%',
+    elevation: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 6, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+  },
+  companyHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 50,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+  },
+  companyInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+  },
+  companyName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  closeIconButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickCreateContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  quickCreateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    gap: 8,
+  },
+  quickCreateLabel: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  drawerContent: {
+    flex: 1,
+  },
+  menuSection: {
+    paddingBottom: 16,
+  },
+  sectionHeader: {
+    fontSize: 12,
+    fontWeight: '600',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    gap: 12,
+  },
+  menuLabel: {
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  bottomMenu: {
+    borderTopWidth: 1,
+    paddingVertical: 8,
+  },
+  bottomMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    gap: 12,
+  },
+  drawerFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    paddingBottom: 24,
+    borderTopWidth: 1,
+  },
+  userAvatarContainer: {
+    marginRight: 12,
+  },
+  drawerUserInfo: {
+    flex: 1,
+    gap: 4,
+    marginRight: 12,
+  },
+  drawerUserName: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  drawerUserEmail: {
+    fontSize: 12,
+  },
+  userSettingsIconContainer: {
+    width: 28,
+    height: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  // Header styles
+  header: {
+    paddingTop: 50,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
+  },
+  headerContent: {
+    marginBottom: 20,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  menuButton: {
+    padding: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 8,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
+  themeButton: {
+    padding: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 8,
+  },
+  // Sales Summary styles
+  salesSummary: {
+    gap: 16,
+  },
+  salesHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  salesLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
+  periodButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  periodText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
+  salesAmount: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    letterSpacing: -2,
+    color: '#ffffff',
+  },
+  statsRow: {
+    flexDirection: 'row',
     gap: 24,
   },
-  header: {
-    marginBottom: 8,
-    fontSize: 32,
+  statBox: {
+    gap: 4,
+  },
+  statValue: {
+    fontSize: 22,
     fontWeight: 'bold',
+    color: '#ffffff',
+  },
+  statLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#ffffff',
+    opacity: 0.95,
+  },
+  content: {
+    flex: 1,
+  },
+  contentContainer: {
+    padding: 20,
+    paddingBottom: 100, // Extra padding for bottom tab bar
+    gap: 24,
   },
   section: {
     gap: 16,
   },
   sectionTitle: {
-    marginBottom: 8,
-    fontSize: 20,
-    fontWeight: '700',
-  },
-  kpiGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-  },
-  kpiCard: {
-    flexGrow: 1,
-    minWidth: '30%',
-    borderWidth: 1,
-    borderRadius: 16,
-    padding: 20,
-    gap: 6,
-  },
-  kpiValue: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  kpiLabel: {
-    opacity: 0.7,
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  kpiTrend: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '600',
-    marginTop: 4,
   },
-  actionsRow: {
+  activityButtons: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: 12,
   },
-  actionButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 14,
-    borderRadius: 12,
+  activityButton: {
+    flex: 1,
   },
-  actionText: {
+  activityButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  activityButtonText: {
     color: '#ffffff',
     fontSize: 15,
     fontWeight: '600',
   },
-  listItem: {
-    borderWidth: 1,
-    borderRadius: 12,
+  tasksList: {
+    gap: 12,
+  },
+  taskCard: {
+    marginBottom: 0,
+  },
+  taskCardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 16,
-    gap: 6,
   },
-  listRow: {
+  taskLeft: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 12,
+    flex: 1,
   },
-  listMeta: {
-    opacity: 0.7,
+  taskIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  taskInfo: {
+    flex: 1,
+    gap: 4,
+  },
+  taskTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  taskMeta: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  taskType: {
     fontSize: 13,
+    fontWeight: '500',
   },
-  badge: {
-    fontSize: 11,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
+  taskStatus: {
+    fontSize: 13,
+    fontWeight: '600',
     textTransform: 'capitalize',
-    fontWeight: '600',
   },
-  link: {
-    fontWeight: '600',
-    fontSize: 14,
-  },
-  sectionHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  taskTime: {
+    fontSize: 13,
+    fontWeight: '500',
   },
   separator: {
+    width: 1,
     height: 12,
   },
 });

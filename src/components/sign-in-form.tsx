@@ -9,8 +9,9 @@ import * as React from 'react';
 import { type TextInput, View, StyleSheet, Alert } from 'react-native';
 
 export function SignInForm() {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  // Pre-filled demo credentials for easy testing
+  const [email, setEmail] = React.useState('demo@example.com');
+  const [password, setPassword] = React.useState('password123');
   const [isLoading, setIsLoading] = React.useState(false);
   const passwordInputRef = React.useRef<TextInput>(null);
   const [error, setError] = React.useState<{ email?: string; password?: string }>({});
@@ -63,13 +64,13 @@ export function SignInForm() {
       // In production, this would be an actual API call
       console.log('Sign in successful:', { email: email.trim() });
 
-      // Show success message
+      // Show success message and navigate to home
       Alert.alert('Success', 'Signed in successfully!', [
         {
           text: 'OK',
           onPress: () => {
-            // Navigate to main dashboard
-            router.replace('/(dashboards)/');
+            // Navigate to home/overview page (tabs)
+            router.replace('/(tabs)/');
           },
         },
       ]);
