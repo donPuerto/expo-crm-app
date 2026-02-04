@@ -10,7 +10,8 @@
     "platforms": ["ios", "android"],
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.expocrmapp.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +20,7 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-
+      "package": "com.expocrmapp.app",
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },

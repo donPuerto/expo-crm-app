@@ -186,9 +186,7 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
 
-  // Font is applied globally via CSS (web) and NativeWind (native)
-  // No need to set defaultProps as it's handled by Tailwind/NativeWind configuration
-
+  // Show loading screen while fonts load
   if (!fontsLoaded && !fontError) {
     return null;
   }

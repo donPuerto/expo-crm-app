@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -16,63 +16,57 @@ export interface FontState {
 const defaultFontFamily: FontFamily = 'Inter';
 const defaultFontScale = 1.0;
 
-// Platform-specific storage adapter that avoids import.meta
-const createStorage = () => {
+// Platform-specific storage adapter that uses Zustand's JSON storage
+const customStorage = createJSONStorage<FontState>(() => {
   if (Platform.OS === 'web') {
-    // Web: Use localStorage with JSON serialization
+    // Web: Use localStorage
     return {
-      getItem: (name: string): Promise<string | null> => {
+      getItem: (name: string) => {
         try {
           if (typeof window !== 'undefined' && window.localStorage) {
-            const value = window.localStorage.getItem(name);
-            return Promise.resolve(value);
+            return localStorage.getItem(name);
           }
-          return Promise.resolve(null);
-        } catch (error) {
-          return Promise.resolve(null);
+          return null;
+        } catch {
+          return null;
         }
       },
-      setItem: (name: string, value: string): Promise<void> => {
+      setItem: (name: string, value: string) => {
         try {
           if (typeof window !== 'undefined' && window.localStorage) {
-            window.localStorage.setItem(name, value);
+            localStorage.setItem(name, value);
           }
-          return Promise.resolve();
-        } catch (error) {
-          return Promise.resolve();
+        } catch {
+          // Ignore errors
         }
       },
-      removeItem: (name: string): Promise<void> => {
+      removeItem: (name: string) => {
         try {
           if (typeof window !== 'undefined' && window.localStorage) {
-            window.localStorage.removeItem(name);
+            localStorage.removeItem(name);
           }
-          return Promise.resolve();
-        } catch (error) {
-          return Promise.resolve();
+        } catch {
+          // Ignore errors
         }
       },
     };
   }
   // Native: Use AsyncStorage
   return AsyncStorage;
-};
-
-// Create storage instance at module load time
-const storage = createStorage();
+});
 
 export const useFontStore = create<FontState>()(
   persist(
-    (set) => ({
+    set => ({
       fontFamily: defaultFontFamily,
       fontScale: defaultFontScale,
-      setFontFamily: (family) => set({ fontFamily: family }),
-      setFontScale: (scale) => set({ fontScale: Math.max(0.8, Math.min(1.5, scale)) }),
+      setFontFamily: family => set({ fontFamily: family }),
+      setFontScale: scale => set({ fontScale: Math.max(0.8, Math.min(1.5, scale)) }),
       resetFontSettings: () => set({ fontFamily: defaultFontFamily, fontScale: defaultFontScale }),
     }),
     {
       name: 'font-preferences',
-      storage,
+      storage: customStorage,
     }
   )
 );

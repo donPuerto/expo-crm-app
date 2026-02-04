@@ -17,6 +17,7 @@ import { Text } from '@/components/ui/text';
 import { addOpacityToHex } from '@/lib/utils';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useFont } from '@/hooks/use-font';
+import { useAuthStore } from '@/store/auth-store';
 
 function AnimatedFeatureCard({ children, index }: { children: React.ReactNode; index: number }) {
   const opacity = useSharedValue(0);
@@ -43,6 +44,15 @@ function AnimatedFeatureCard({ children, index }: { children: React.ReactNode; i
 // Purpose: render the CRM welcome/landing experience.
 export default function WelcomeScreen() {
   const router = useRouter();
+  const { user } = useAuthStore();
+
+  // Redirect to tabs if already authenticated
+  useEffect(() => {
+    if (user) {
+      router.replace('/(tabs)/');
+    }
+  }, [user, router]);
+
   // Explicit theme colors using useThemeColor hook - MUST use for consistency
   const backgroundColor = useThemeColor({}, 'background');
   const textColor = useThemeColor({}, 'text');
