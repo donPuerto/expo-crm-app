@@ -4,7 +4,7 @@ import { ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { LogBox, StyleSheet, View } from 'react-native';
-import { PortalHost } from '@rn-primitives/portal';
+import { TamaguiProvider, Theme } from '@tamagui/core';
 import { useFonts } from 'expo-font';
 import {
   Inter_400Regular,
@@ -14,7 +14,7 @@ import {
 } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-reanimated';
-import '../global.css';
+import config from '@/tamagui/tamagui.config';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -193,53 +193,60 @@ export default function RootLayout() {
 
   return (
     <ThemePreferenceContext.Provider value={contextValue}>
-      <ThemeProvider value={NAV_THEME[resolvedScheme]}>
-        <View style={{ flex: 1 }} className={resolvedScheme === 'dark' ? 'dark' : ''}>
-          <Stack
-            screenOptions={{
-              animation: 'fade',
-              animationDuration: 300,
-              animationTypeForReplace: 'push',
-            }}
-          >
-            <Stack.Screen name="splash" options={{ headerShown: false, animation: 'none' }} />
-            <Stack.Screen name="welcome" options={{ headerShown: false }} />
-            <Stack.Screen name="(crm)" options={{ headerShown: false }} />
-            <Stack.Screen name="(dashboards)" options={{ headerShown: false }} />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="terms"
-              options={{
-                presentation: 'modal',
-                title: 'Terms of Service',
-                animation: 'slide_from_bottom',
-              }}
-            />
-            <Stack.Screen
-              name="policy"
-              options={{
-                presentation: 'modal',
-                title: 'Privacy Policy',
-                animation: 'slide_from_bottom',
-              }}
-            />
-            <Stack.Screen
-              name="modal"
-              options={{ presentation: 'modal', title: 'Modal', animation: 'slide_from_bottom' }}
-            />
-            <Stack.Screen
-              name="(modals)/user-profile"
-              options={{
-                presentation: 'modal',
-                headerShown: false,
-                animation: 'slide_from_bottom',
-              }}
-            />
-          </Stack>
-          <StatusBar style="auto" />
-          <PortalHost />
-        </View>
-      </ThemeProvider>
+      <TamaguiProvider config={config} defaultTheme={resolvedScheme}>
+        <Theme name={resolvedScheme === 'dark' ? 'dark' : 'light'}>
+          <ThemeProvider value={NAV_THEME[resolvedScheme]}>
+            <View style={{ flex: 1 }}>
+              <Stack
+                screenOptions={{
+                  animation: 'fade',
+                  animationDuration: 300,
+                  animationTypeForReplace: 'push',
+                }}
+              >
+                <Stack.Screen name="splash" options={{ headerShown: false, animation: 'none' }} />
+                <Stack.Screen name="welcome" options={{ headerShown: false }} />
+                <Stack.Screen name="(crm)" options={{ headerShown: false }} />
+                <Stack.Screen name="(dashboards)" options={{ headerShown: false }} />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="terms"
+                  options={{
+                    presentation: 'modal',
+                    title: 'Terms of Service',
+                    animation: 'slide_from_bottom',
+                  }}
+                />
+                <Stack.Screen
+                  name="policy"
+                  options={{
+                    presentation: 'modal',
+                    title: 'Privacy Policy',
+                    animation: 'slide_from_bottom',
+                  }}
+                />
+                <Stack.Screen
+                  name="modal"
+                  options={{
+                    presentation: 'modal',
+                    title: 'Modal',
+                    animation: 'slide_from_bottom',
+                  }}
+                />
+                <Stack.Screen
+                  name="(modals)/user-profile"
+                  options={{
+                    presentation: 'modal',
+                    headerShown: false,
+                    animation: 'slide_from_bottom',
+                  }}
+                />
+              </Stack>
+              <StatusBar style="auto" />
+            </View>
+          </ThemeProvider>
+        </Theme>
+      </TamaguiProvider>
     </ThemePreferenceContext.Provider>
   );
 }

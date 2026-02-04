@@ -4,10 +4,14 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
+      "@/server/*": ["./src/server/*"],
+      "@/database/*": ["./src/database/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/interface/*": ["./src/interface/*"],
+      "@/tamagui/*": ["./src/tamagui/*"],
       "@/*": ["./src/*"],
-      "@/services/*": ["./services/*"],
       "~assets/*": ["./assets/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"]
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }

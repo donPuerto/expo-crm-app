@@ -1,13 +1,23 @@
 module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ['babel-preset-expo', 'nativewind/babel'],
+    presets: [['babel-preset-expo', { jsxImportSource: 'react' }]],
     plugins: [
+      [
+        '@tamagui/babel-plugin',
+        {
+          components: ['tamagui'],
+          config: './src/tamagui/tamagui.config.ts',
+          logTimings: true,
+          disableExtraction: process.env.NODE_ENV === 'development',
+        },
+      ],
       [
         'module-resolver',
         {
           root: ['./'],
           alias: {
+            '@/services': './services',
             '@': './src',
             '~assets': './assets',
           },
@@ -25,6 +35,7 @@ module.exports = function (api) {
           ],
         },
       ],
+      'react-native-reanimated/plugin', // Must be last
     ],
   };
 };
