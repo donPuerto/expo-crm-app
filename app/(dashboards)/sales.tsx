@@ -2,14 +2,14 @@ import React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
 import {
-    ActivityList,
-    ChartCard,
-    DashboardGrid,
-    DashboardHeader,
-    StatCard,
-    type ActivityItem,
+  ActivityList,
+  ChartCard,
+  DashboardGrid,
+  DashboardHeader,
+  StatCard,
+  type ActivityItem,
 } from '@/components/dashboard';
-import { ThemedView } from '@/components/themed-view';
+import { ThemedView } from '@/interface/components/themed-view';
 import { salesDashboard } from '@/features/dashboard/definitions';
 
 export default function SalesDashboard() {
@@ -36,7 +36,12 @@ export default function SalesDashboard() {
             if (widget.type === 'chart') {
               const config = widget.config as { title: string; subtitle?: string };
               return (
-                <ChartCard key={widget.id} title={config.title} subtitle={config.subtitle} index={index}>
+                <ChartCard
+                  key={widget.id}
+                  title={config.title}
+                  subtitle={config.subtitle}
+                  index={index}
+                >
                   <>{/* Placeholder for chart - implement chart library integration here */}</>
                 </ChartCard>
               );

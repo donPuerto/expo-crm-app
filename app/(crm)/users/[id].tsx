@@ -1,18 +1,14 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Alert } from 'react-native';
+import { YStack, XStack, H1, Text, Button, ScrollView, Separator } from 'tamagui';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withDelay,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { useThemeColor } from '@/hooks/use-theme-color';
-import { createShadowStyle } from '@/lib/shadow-styles';
+import { Input } from '@/interface/primitives/input';
 
 type User = {
   id: string;
@@ -85,15 +81,6 @@ export default function UserDetailScreen() {
   const [department, setDepartment] = useState(user?.department || '');
   const [status, setStatus] = useState<User['status']>(user?.status || 'active');
 
-  const backgroundColor = useThemeColor({}, 'background');
-  const cardBg = useThemeColor({}, 'card');
-  const borderColor = useThemeColor({}, 'border');
-  const tint = useThemeColor({}, 'tint');
-  const textColor = useThemeColor({}, 'text');
-  const successColor = useThemeColor({}, 'success');
-  const warningColor = useThemeColor({}, 'warning');
-  const errorColor = useThemeColor({}, 'error');
-
   useEffect(() => {
     if (user) {
       setName(user.name);
@@ -120,28 +107,51 @@ export default function UserDetailScreen() {
 
   if (!user) {
     return (
-      <ThemedView style={[styles.container, { backgroundColor }]}>
-        <ThemedText style={[styles.errorText, { color: errorColor }]}>User not found</ThemedText>
-        <Pressable
-          style={[styles.button, { backgroundColor: tint }]}
+      <YStack
+        flex={1}
+        backgroundColor="$background"
+        justifyContent="center"
+        alignItems="center"
+        paddingHorizontal="$5"
+      >
+        <Text fontSize="$4" fontWeight="600" color="$red10" marginBottom="$5">
+          User not found
+        </Text>
+        <Button
+          size="$4"
+          backgroundColor="$primary"
+          color="$primaryForeground"
           onPress={() => router.back()}
         >
-          <ThemedText style={styles.buttonText}>Go Back</ThemedText>
-        </Pressable>
-      </ThemedView>
+          Go Back
+        </Button>
+      </YStack>
     );
   }
 
   const getStatusColor = (status: User['status']) => {
     switch (status) {
       case 'active':
-        return successColor;
+        return '$green10';
       case 'pending':
-        return warningColor;
+        return '$orange10';
       case 'inactive':
-        return errorColor;
+        return '$red10';
       default:
-        return borderColor;
+        return '$borderColor';
+    }
+  };
+
+  const getStatusBgColor = (status: User['status']) => {
+    switch (status) {
+      case 'active':
+        return '$green3';
+      case 'pending':
+        return '$orange3';
+      case 'inactive':
+        return '$red3';
+      default:
+        return '$gray3';
     }
   };
 
@@ -155,136 +165,127 @@ export default function UserDetailScreen() {
   };
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor }]}>
-      <View
-        style={[
-          styles.header,
-          { backgroundColor: cardBg, borderBottomColor: borderColor },
-          createShadowStyle({
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.05,
-            shadowRadius: 4,
-            elevation: 2,
-          }),
-        ]}
+    <YStack flex={1} backgroundColor="$background">
+      <YStack
+        backgroundColor="$card"
+        borderBottomWidth={1}
+        borderBottomColor="$borderColor"
+        paddingVertical="$4"
+        paddingHorizontal="$5"
       >
-        <Pressable onPress={() => router.back()}>
-          <ThemedText style={[styles.backButton, { color: tint }]}>← Back</ThemedText>
-        </Pressable>
-        <ThemedText type="title" style={[styles.headerTitle, { color: textColor }]}>
-          {isEditing ? 'Edit User' : 'User Details'}
-        </ThemedText>
-        <Pressable
-          onPress={() => (isEditing ? handleSave() : setIsEditing(true))}
-          style={[styles.editButton, { backgroundColor: isEditing ? tint : 'transparent' }]}
-        >
-          <ThemedText
-            style={[
-              styles.editButtonText,
-              { color: isEditing ? '#ffffff' : tint },
-            ]}
+        <XStack alignItems="center" gap="$4">
+          <Button unstyled onPress={() => router.back()}>
+            <Text fontSize="$4" fontWeight="600" color="$primary">
+              ← Back
+            </Text>
+          </Button>
+          <H1 flex={1} fontSize="$6" fontWeight="700" color="$color">
+            {isEditing ? 'Edit User' : 'User Details'}
+          </H1>
+          <Button
+            size="$3"
+            backgroundColor={isEditing ? '$primary' : 'transparent'}
+            color={isEditing ? '$primaryForeground' : '$primary'}
+            borderRadius="$2"
+            onPress={() => (isEditing ? handleSave() : setIsEditing(true))}
           >
             {isEditing ? 'Save' : 'Edit'}
-          </ThemedText>
-        </Pressable>
-      </View>
+          </Button>
+        </XStack>
+      </YStack>
 
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+      <ScrollView flex={1} padding="$5" paddingBottom="$10">
         <Animated.View style={animatedStyle}>
-          <ThemedView
-            style={[
-              styles.card,
-              {
-                backgroundColor: cardBg,
-                borderColor,
-              },
-              createShadowStyle({
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 8,
-                elevation: 3,
-              }),
-            ]}
+          <YStack
+            backgroundColor="$card"
+            borderWidth={1}
+            borderColor="$borderColor"
+            borderRadius="$4"
+            padding="$6"
+            gap="$5"
+            elevation="$2"
           >
-            <View style={styles.nameSection}>
+            <YStack gap="$3">
               {isEditing ? (
-                <TextInput
-                  style={[styles.nameInput, { color: textColor, borderColor }]}
+                <Input
                   value={name}
                   onChangeText={setName}
                   placeholder="Full Name"
-                  placeholderTextColor="#9ca3af"
+                  fontSize="$8"
+                  fontWeight="bold"
                 />
               ) : (
-                <ThemedText type="title" style={[styles.name, { color: textColor }]}>
+                <H1 fontSize="$8" fontWeight="bold" color="$color" marginBottom="$2">
                   {name}
-                </ThemedText>
+                </H1>
               )}
-              <View
-                style={[
-                  styles.statusBadge,
-                  {
-                    backgroundColor: `${getStatusColor(status)}20`,
-                    borderColor: getStatusColor(status),
-                  },
-                ]}
+              <XStack
+                alignSelf="flex-start"
+                paddingVertical="$2"
+                paddingHorizontal="$3.5"
+                borderRadius="$3"
+                borderWidth={1}
+                borderColor={getStatusColor(status)}
+                backgroundColor={getStatusBgColor(status)}
+                alignItems="center"
+                gap="$2"
               >
-                <View
-                  style={[
-                    styles.statusDot,
-                    { backgroundColor: getStatusColor(status) },
-                  ]}
+                <YStack
+                  width={10}
+                  height={10}
+                  borderRadius="$12"
+                  backgroundColor={getStatusColor(status)}
                 />
                 {isEditing ? (
-                  <View style={styles.statusButtons}>
+                  <XStack gap="$1.5">
                     {(['active', 'inactive', 'pending'] as const).map(s => (
-                      <Pressable
+                      <Button
                         key={s}
+                        unstyled
+                        paddingHorizontal="$2.5"
+                        paddingVertical="$1"
+                        borderRadius="$2"
+                        backgroundColor={status === s ? getStatusColor(s) : 'transparent'}
                         onPress={() => setStatus(s)}
-                        style={[
-                          styles.statusOption,
-                          {
-                            backgroundColor: status === s ? getStatusColor(s) : 'transparent',
-                          },
-                        ]}
                       >
-                        <ThemedText
-                          style={[
-                            styles.statusOptionText,
-                            { color: status === s ? '#ffffff' : getStatusColor(s) },
-                          ]}
+                        <Text
+                          fontSize="$1"
+                          fontWeight="600"
+                          textTransform="uppercase"
+                          color={status === s ? '$white' : getStatusColor(s)}
                         >
                           {s}
-                        </ThemedText>
-                      </Pressable>
+                        </Text>
+                      </Button>
                     ))}
-                  </View>
+                  </XStack>
                 ) : (
-                  <ThemedText
-                    style={[styles.statusText, { color: getStatusColor(status) }]}
+                  <Text
+                    fontSize="$2"
+                    fontWeight="700"
+                    textTransform="uppercase"
+                    color={getStatusColor(status)}
                   >
                     {status}
-                  </ThemedText>
+                  </Text>
                 )}
-              </View>
-            </View>
+              </XStack>
+            </YStack>
 
-            <View style={styles.divider} />
+            <Separator />
 
-            <View style={styles.section}>
-              <ThemedText style={styles.label}>Email Address</ThemedText>
+            <YStack gap="$2">
+              <Text
+                fontSize="$2"
+                fontWeight="600"
+                color="$gray11"
+                textTransform="uppercase"
+                letterSpacing={0.5}
+              >
+                Email Address
+              </Text>
               {isEditing ? (
-                <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      backgroundColor: backgroundColor,
-                      borderColor,
-                      color: textColor,
-                    },
-                  ]}
+                <Input
                   value={email}
                   onChangeText={setEmail}
                   placeholder="Email"
@@ -292,267 +293,107 @@ export default function UserDetailScreen() {
                   autoCapitalize="none"
                 />
               ) : (
-                <ThemedText style={[styles.value, { color: tint }]}>{email}</ThemedText>
+                <Text fontSize="$4" fontWeight="500" color="$primary">
+                  {email}
+                </Text>
               )}
-            </View>
+            </YStack>
 
-            <View style={styles.section}>
-              <ThemedText style={styles.label}>Phone Number</ThemedText>
+            <YStack gap="$2">
+              <Text
+                fontSize="$2"
+                fontWeight="600"
+                color="$gray11"
+                textTransform="uppercase"
+                letterSpacing={0.5}
+              >
+                Phone Number
+              </Text>
               {isEditing ? (
-                <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      backgroundColor: backgroundColor,
-                      borderColor,
-                      color: textColor,
-                    },
-                  ]}
+                <Input
                   value={phone}
                   onChangeText={setPhone}
                   placeholder="Phone"
                   keyboardType="phone-pad"
                 />
               ) : (
-                <ThemedText style={styles.value}>{phone || 'Not provided'}</ThemedText>
+                <Text fontSize="$4" fontWeight="500" color="$color">
+                  {phone || 'Not provided'}
+                </Text>
               )}
-            </View>
+            </YStack>
 
-            <View style={styles.section}>
-              <ThemedText style={styles.label}>Role</ThemedText>
+            <YStack gap="$2">
+              <Text
+                fontSize="$2"
+                fontWeight="600"
+                color="$gray11"
+                textTransform="uppercase"
+                letterSpacing={0.5}
+              >
+                Role
+              </Text>
               {isEditing ? (
-                <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      backgroundColor: backgroundColor,
-                      borderColor,
-                      color: textColor,
-                    },
-                  ]}
-                  value={role}
-                  onChangeText={setRole}
-                  placeholder="Role"
-                />
+                <Input value={role} onChangeText={setRole} placeholder="Role" />
               ) : (
-                <ThemedText style={styles.value}>{role}</ThemedText>
+                <Text fontSize="$4" fontWeight="500" color="$color">
+                  {role}
+                </Text>
               )}
-            </View>
+            </YStack>
 
-            <View style={styles.section}>
-              <ThemedText style={styles.label}>Department</ThemedText>
+            <YStack gap="$2">
+              <Text
+                fontSize="$2"
+                fontWeight="600"
+                color="$gray11"
+                textTransform="uppercase"
+                letterSpacing={0.5}
+              >
+                Department
+              </Text>
               {isEditing ? (
-                <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      backgroundColor: backgroundColor,
-                      borderColor,
-                      color: textColor,
-                    },
-                  ]}
-                  value={department}
-                  onChangeText={setDepartment}
-                  placeholder="Department"
-                />
+                <Input value={department} onChangeText={setDepartment} placeholder="Department" />
               ) : (
-                <ThemedText style={styles.value}>{department || 'Not assigned'}</ThemedText>
+                <Text fontSize="$4" fontWeight="500" color="$color">
+                  {department || 'Not assigned'}
+                </Text>
               )}
-            </View>
+            </YStack>
 
             {!isEditing && (
               <>
-                <View style={styles.divider} />
-                <View style={styles.actions}>
-                  <Pressable
-                    style={[
-                      styles.actionButton,
-                      { backgroundColor: tint },
-                      createShadowStyle({
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.1,
-                        shadowRadius: 4,
-                        elevation: 2,
-                      }),
-                    ]}
+                <Separator marginVertical="$2" />
+                <XStack gap="$3" marginTop="$2">
+                  <Button
+                    flex={1}
+                    size="$4"
+                    backgroundColor="$primary"
+                    color="$primaryForeground"
+                    borderRadius="$2"
+                    elevation="$2"
                     onPress={() => Alert.alert('Contact', `Calling ${name}...`)}
                   >
-                    <ThemedText style={styles.actionButtonText}>Call</ThemedText>
-                  </Pressable>
-                  <Pressable
-                    style={[
-                      styles.actionButton,
-                      {
-                        backgroundColor: cardBg,
-                        borderWidth: 1,
-                        borderColor,
-                      },
-                    ]}
+                    Call
+                  </Button>
+                  <Button
+                    flex={1}
+                    size="$4"
+                    backgroundColor="$card"
+                    color="$color"
+                    borderWidth={1}
+                    borderColor="$borderColor"
+                    borderRadius="$2"
                     onPress={() => Alert.alert('Email', `Opening email to ${email}...`)}
                   >
-                    <ThemedText style={[styles.actionButtonText, { color: textColor }]}>
-                      Email
-                    </ThemedText>
-                  </Pressable>
-                </View>
+                    Email
+                  </Button>
+                </XStack>
               </>
             )}
-          </ThemedView>
+          </YStack>
         </Animated.View>
       </ScrollView>
-    </ThemedView>
+    </YStack>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-  },
-  backButton: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginRight: 16,
-  },
-  headerTitle: {
-    flex: 1,
-    fontSize: 20,
-    fontWeight: '700',
-  },
-  editButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  editButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  scrollContent: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  card: {
-    borderWidth: 1,
-    borderRadius: 16,
-    padding: 24,
-    gap: 20,
-  },
-  nameSection: {
-    gap: 12,
-  },
-  name: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  nameInput: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    borderRadius: 8,
-    padding: 12,
-  },
-  statusBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    gap: 8,
-  },
-  statusDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-  },
-  statusButtons: {
-    flexDirection: 'row',
-    gap: 6,
-  },
-  statusOption: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  statusOptionText: {
-    fontSize: 11,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#e5e7eb',
-    marginVertical: 8,
-  },
-  section: {
-    gap: 8,
-  },
-  label: {
-    fontSize: 12,
-    fontWeight: '600',
-    opacity: 0.7,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  value: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 16,
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 8,
-  },
-  actionButton: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  actionButtonText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  errorText: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 20,
-    fontWeight: '600',
-  },
-  button: {
-    marginTop: 20,
-    marginHorizontal: 20,
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-});

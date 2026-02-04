@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Alert } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -8,11 +8,8 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { useThemeColor } from '@/hooks/use-theme-color';
-import { createShadowStyle } from '@/lib/shadow-styles';
+import { YStack, XStack, Text, H1, ScrollView, Button } from 'tamagui';
+import { Input } from '@/interface/primitives/input';
 
 function AnimatedInput({
   label,
@@ -33,9 +30,6 @@ function AnimatedInput({
 }) {
   const opacity = useSharedValue(0);
   const translateX = useSharedValue(-20);
-  const borderColor = useThemeColor({}, 'border');
-  const cardBg = useThemeColor({}, 'card');
-  const textColor = useThemeColor({}, 'text');
 
   React.useEffect(() => {
     opacity.value = withDelay(index * 50, withTiming(1, { duration: 300 }));
@@ -49,25 +43,19 @@ function AnimatedInput({
 
   return (
     <Animated.View style={animatedStyle}>
-      <View style={styles.inputContainer}>
-        <ThemedText style={styles.label}>{label}</ThemedText>
-        <TextInput
-          style={[
-            styles.input,
-            {
-              backgroundColor: cardBg,
-              borderColor,
-              color: textColor,
-            },
-          ]}
+      <YStack marginBottom="$5">
+        <Text fontSize="$2" fontWeight="600" marginBottom="$2" opacity={0.8}>
+          {label}
+        </Text>
+        <Input
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor="#9ca3af"
+          placeholderTextColor="$gray9"
           keyboardType={keyboardType}
           autoCapitalize={autoCapitalize}
         />
-      </View>
+      </YStack>
     </Animated.View>
   );
 }
@@ -81,12 +69,6 @@ export default function AddUserScreen() {
   const [department, setDepartment] = useState('');
   const [status, setStatus] = useState<'active' | 'inactive' | 'pending'>('active');
 
-  const backgroundColor = useThemeColor({}, 'background');
-  const tint = useThemeColor({}, 'tint');
-  const cardBg = useThemeColor({}, 'card');
-  const borderColor = useThemeColor({}, 'border');
-  const textColor = useThemeColor({}, 'text');
-
   const handleSave = () => {
     if (!name || !email || !role) {
       Alert.alert('Error', 'Please fill all required fields (Name, Email, Role)');
@@ -97,11 +79,14 @@ export default function AddUserScreen() {
   };
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor }]}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <ThemedText type="title" style={[styles.title, { color: textColor }]}>
+    <YStack flex={1} backgroundColor="$background">
+      <ScrollView
+        contentContainerStyle={{ padding: 20, paddingTop: 24, paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <H1 fontSize="$9" fontWeight="bold" marginBottom="$6" color="$color">
           Add New User
-        </ThemedText>
+        </H1>
 
         <AnimatedInput
           label="Full Name *"
@@ -146,114 +131,42 @@ export default function AddUserScreen() {
           index={4}
         />
 
-        <View style={styles.statusContainer}>
-          <ThemedText style={styles.label}>Status</ThemedText>
-          <View style={styles.statusButtons}>
+        <YStack marginBottom="$6">
+          <Text fontSize="$2" fontWeight="600" marginBottom="$2" opacity={0.8}>
+            Status
+          </Text>
+          <XStack gap="$3" marginTop="$2">
             {(['active', 'inactive', 'pending'] as const).map(s => (
-              <Pressable
+              <Button
                 key={s}
+                flex={1}
+                size="$4"
+                borderRadius="$2"
+                borderWidth={1}
+                backgroundColor={status === s ? '$primary' : '$card'}
+                borderColor={status === s ? '$primary' : '$borderColor'}
+                color={status === s ? '$primaryForeground' : '$color'}
                 onPress={() => setStatus(s)}
-                style={[
-                  styles.statusButton,
-                  {
-                    backgroundColor: status === s ? tint : cardBg,
-                    borderColor: status === s ? tint : borderColor,
-                  },
-                ]}
               >
-                <ThemedText
-                  style={[
-                    styles.statusButtonText,
-                    { color: status === s ? '#ffffff' : textColor },
-                  ]}
-                >
-                  {s.charAt(0).toUpperCase() + s.slice(1)}
-                </ThemedText>
-              </Pressable>
+                {s.charAt(0).toUpperCase() + s.slice(1)}
+              </Button>
             ))}
-          </View>
-        </View>
+          </XStack>
+        </YStack>
 
-        <Pressable
-          style={[
-            styles.saveButton,
-            { backgroundColor: tint },
-            createShadowStyle({
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 2,
-            }),
-          ]}
+        <Button
+          marginTop="$2"
+          size="$5"
+          backgroundColor="$primary"
+          color="$primaryForeground"
+          fontWeight="600"
+          borderRadius="$3"
+          elevation={2}
           onPress={handleSave}
         >
-          <ThemedText style={styles.saveButtonText}>Save User</ThemedText>
-        </Pressable>
+          Save User
+        </Button>
       </ScrollView>
-    </ThemedView>
+    </YStack>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 20,
-    paddingTop: 24,
-    paddingBottom: 40,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 24,
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '600',
-    marginBottom: 8,
-    opacity: 0.8,
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-  },
-  statusContainer: {
-    marginBottom: 24,
-  },
-  statusButtons: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 8,
-  },
-  statusButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
-  statusButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  saveButton: {
-    marginTop: 8,
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: '#ffffff',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-});

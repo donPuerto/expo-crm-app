@@ -1,6 +1,8 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert } from 'react-native';
+import { YStack, H1, Text, Button } from 'tamagui';
+import { Input } from '@/interface/primitives/input';
 
 export default function AddContactScreen() {
   const router = useRouter();
@@ -19,85 +21,56 @@ export default function AddContactScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Add Contact</Text>
+    <YStack flex={1} backgroundColor="$background" paddingTop={60} paddingHorizontal="$5">
+      <H1 fontSize="$7" fontWeight="700" color="$color" marginBottom="$4">
+        Add Contact
+      </H1>
 
-      <Text style={styles.label}>Full Name</Text>
-      <TextInput
-        style={styles.input}
-        value={name}
-        onChangeText={setName}
-        placeholder="Contact name"
-      />
+      <YStack marginTop="$3">
+        <Text fontSize="$2" fontWeight="600" color="$gray11" marginBottom="$2">
+          Full Name
+        </Text>
+        <Input value={name} onChangeText={setName} placeholder="Contact name" />
+      </YStack>
 
-      <Text style={styles.label}>Company</Text>
-      <TextInput
-        style={styles.input}
-        value={company}
-        onChangeText={setCompany}
-        placeholder="Company"
-      />
+      <YStack marginTop="$3">
+        <Text fontSize="$2" fontWeight="600" color="$gray11" marginBottom="$2">
+          Company
+        </Text>
+        <Input value={company} onChangeText={setCompany} placeholder="Company" />
+      </YStack>
 
-      <Text style={styles.label}>Email</Text>
-      <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+      <YStack marginTop="$3">
+        <Text fontSize="$2" fontWeight="600" color="$gray11" marginBottom="$2">
+          Email
+        </Text>
+        <Input
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Email"
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+      </YStack>
 
-      <Text style={styles.label}>Phone</Text>
-      <TextInput style={styles.input} value={phone} onChangeText={setPhone} placeholder="Phone" />
+      <YStack marginTop="$3">
+        <Text fontSize="$2" fontWeight="600" color="$gray11" marginBottom="$2">
+          Phone
+        </Text>
+        <Input value={phone} onChangeText={setPhone} placeholder="Phone" />
+      </YStack>
 
-      <Pressable style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Save Contact</Text>
-      </Pressable>
-    </View>
+      <Button
+        marginTop="$5"
+        size="$5"
+        backgroundColor="$primary"
+        color="$primaryForeground"
+        fontWeight="600"
+        borderRadius="$3"
+        onPress={handleSave}
+      >
+        Save Contact
+      </Button>
+    </YStack>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8fafc',
-    paddingTop: 60,
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#1e293b',
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#64748b',
-    marginTop: 12,
-    marginBottom: 6,
-  },
-  input: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#1e293b',
-  },
-  saveButton: {
-    marginTop: 20,
-    backgroundColor: '#6366f1',
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-});

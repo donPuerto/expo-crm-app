@@ -9,8 +9,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/interface/components/themed-text';
+import { ThemedView } from '@/interface/components/themed-view';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { createShadowStyle } from '@/lib/shadow-styles';
 
@@ -160,18 +160,8 @@ function AnimatedUserCard({
               },
             ]}
           >
-            <View
-              style={[
-                styles.statusDot,
-                { backgroundColor: getStatusColor(user.status) },
-              ]}
-            />
-            <ThemedText
-              style={[
-                styles.statusText,
-                { color: getStatusColor(user.status) },
-              ]}
-            >
+            <View style={[styles.statusDot, { backgroundColor: getStatusColor(user.status) }]} />
+            <ThemedText style={[styles.statusText, { color: getStatusColor(user.status) }]}>
               {user.status}
             </ThemedText>
           </View>
@@ -190,9 +180,7 @@ function AnimatedUserCard({
           {user.phone && (
             <View style={styles.detailRow}>
               <ThemedText style={styles.detailLabel}>Phone:</ThemedText>
-              <ThemedText style={[styles.detailValue, { color: tint }]}>
-                {user.phone}
-              </ThemedText>
+              <ThemedText style={[styles.detailValue, { color: tint }]}>{user.phone}</ThemedText>
             </View>
           )}
         </View>

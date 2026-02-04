@@ -1566,6 +1566,48 @@ expo-crm-app/
   - Props: `value`, `max`, `size`, `unstyled`
   - Indicator: Animatable with `transition` prop
 
+- **Avatar** (`@tamagui/avatar`):
+  - Pattern: `<Avatar circular size="$6"><Avatar.Image src="..." /><Avatar.Fallback bc="red" /></Avatar>`
+  - Extends Square with `size` and `circular` props
+  - Props: `delayMs` (milliseconds to wait before showing fallback)
+  - Avatar.Image: Extends Image component
+  - Avatar.Fallback: Extends YStack, shown while image loads or on error
+  - Auto-swaps fallback for image on load
+
+- **Card** (`@tamagui/card`):
+  - Pattern: `<Card><Card.Header /><Card.Footer /><Card.Background /></Card>`
+  - Props: `size` (passes to sub-components), `unstyled`
+  - Card.Header: Extends ThemeableStack, `unstyled` prop
+  - Card.Footer: Extends ThemeableStack, `unstyled` prop
+  - Card.Background: Extends YStack, fullscreen with zIndex below Header/Footer
+  - Sizable with size prop affecting all children
+
+- **Image** (`@tamagui/image`):
+  - Pattern: `<Image src="https://..." width={200} height={200} objectFit="cover" />`
+  - Props: `src` (image URL), `alt` (accessibility), `objectFit` (cover/contain/fill/none/scale-down), `objectPosition`
+  - Deprecated: `source` (use `src`), `resizeMode` (use `objectFit`)
+  - Web-only: `loading` (lazy/eager), `decoding` (async/sync/auto), `fetchPriority` (high/low/auto), `srcSet`, `sizes`, `crossOrigin`, `referrerPolicy`
+  - Accessibility: `alt` (required for meaningful images, empty for decorative), `accessible`, `accessibilityLabel`, `aria-label`, `aria-describedby`, `aria-hidden`, `role`
+  - expo-image integration: Use `createImage()` for blurhash, transitions, contentFit, contentPosition
+    ```tsx
+    import { Image as ExpoImage } from 'expo-image'
+    import { createImage } from '@tamagui/image'
+    export const Image = createImage({
+      Component: ExpoImage,
+      resizeModePropName: 'contentFit',
+      objectPositionPropName: 'contentPosition',
+    })
+    ```
+
+- **ListItem** (`@tamagui/list-item`):
+  - Pattern: `<YGroup><YGroup.Item><ListItem title="Star" icon={Icon} iconAfter={ChevronRight} /></YGroup.Item></YGroup>`
+  - Props: `title`, `subTitle`, `size`, `variant` ("outlined"), `icon`, `iconAfter`, `iconSize`, `scaleIcon`, `disabled`, `unstyled`
+  - Icon theming: Automatic sizing based on `size` prop, `iconSize` override, `scaleIcon` for scaling, spacing 40% of icon size
+  - Sub-components: `ListItem.Frame`, `ListItem.Text`, `ListItem.Title`, `ListItem.Subtitle`, `ListItem.Icon`
+  - Context: `ListItem.Apply` passes `color`, `size`, `variant` to children
+  - Works with YGroup for borders, supports animations and themes
+  - Extends Stack with all Tamagui props
+
 **Menu Components:**
 - **Menu** (`@tamagui/menu`):
   - Complex pattern: `Trigger`, `Portal`, `Content`, `Item`, `ItemTitle`, `ItemIcon`, `ItemImage`, `ItemSubtitle`, `Separator`, `Arrow`, `Sub`, `SubTrigger`, `SubContent`, `CheckboxItem`, `ItemIndicator`, `Group`, `Label`
@@ -1708,6 +1750,95 @@ All native integrations are optional - components work without them, but with im
   - Setup: `import '@tamagui/native/setup-expo-linear-gradient'` before Tamagui imports
   - High-performance native gradient rendering
 
+**Utility Components:**
+- **Anchor** (`@tamagui/html`):
+  - Extends SizableText with link functionality
+  - Props: `href`, `target`, `rel`
+  - Web: Renders as `<a>` element
+  - Native: Uses React Native `Linking.openURL`
+
+- **FocusScope** (`@tamagui/focus-scope`):
+  - **Web-only** (no-op on native)
+  - Pattern: `<FocusScope loop trapped focusOnIdle={true}>{children}</FocusScope>`
+  - Props: `enabled`, `loop`, `trapped`, `focusOnIdle`, `onMountAutoFocus`, `onUnmountAutoFocus`, `forceUnmount`
+  - Controller: `<FocusScope.Controller>` provides context-based control
+  - Function children: `{({ onKeyDown, tabIndex, ref }) => <View />}`
+  - Used by Dialog, Popover, Select for focus management
+  - Features: Focus trapping, auto-focus on mount, loop focus, animation-friendly focusing
+
+- **Group** (`@tamagui/group`):
+  - Pattern: `<XGroup><XGroup.Item><Button /></XGroup.Item></XGroup>` or `<YGroup>`
+  - Props: `orientation` (horizontal/vertical), `size` (border radius), `disabled`, `unstyled`
+  - Item props: `forcePlacement` ("first" | "center" | "last")
+  - Auto-detects first/last items, zeros border radius on connecting sides
+  - Hook: `useGroupItem()` for custom components
+  - Children control their own sizing (apply size directly to children, not Group)
+  - Used by Tabs.List, Select, ToggleGroup for visual grouping
+
+- **HTML Elements** (`@tamagui/elements`):
+  - Semantic HTML wrappers: `Section`, `Article`, `Main`, `Header`, `Aside`, `Footer`, `Nav`
+  - All extend View with full Tamagui props
+  - Map directly to lowercase HTML elements on web
+  - No-op on native (renders as View)
+
+- **RovingFocusGroup** (`@tamagui/roving-focus`):
+  - **Web-only** (no-op on native)
+  - Pattern: `<RovingFocusGroup orientation="horizontal" loop><RovingFocusGroup.Item asChild><Button /></RovingFocusGroup.Item></RovingFocusGroup>`
+  - Props: `orientation`, `dir` (ltr/rtl), `loop`, `currentTabStopId`, `defaultCurrentTabStopId`, `onCurrentTabStopIdChange`, `onEntryFocus`
+  - Item props: `tabStopId`, `focusable`, `active`, `asChild`
+  - Roving tabindex pattern: Single tab stop for group, arrow keys navigate between items
+  - Keyboard: Tab (enter/exit group), Arrow keys (navigate), Home/End (first/last)
+  - Used internally by Tabs, RadioGroup, ToggleGroup
+
+- **ScrollView** (`@tamagui/scroll-view`):
+  - React Native ScrollView with full Tamagui style props
+  - All React Native ScrollView features + Tamagui styling
+  - Pattern: `<ScrollView><YStack>{/* content */}</YStack></ScrollView>`
+
+- **Unspaced** (`@tamagui/core`):
+  - Avoids spacing for children inside a spacing container
+  - Pattern: `<View space><Unspaced><Text position="absolute">No spacing</Text></Unspaced></View>`
+  - Used when `space` prop is active but specific children shouldn't be spaced
+  - See VisuallyHidden for accessible hidden + unspaced combination
+
+- **VisuallyHidden** (`@tamagui/visually-hidden`):
+  - Hides content visually but keeps it accessible to screen readers
+  - Pattern: `<VisuallyHidden><Text>Screen reader only</Text></VisuallyHidden>`
+  - Works with `space` prop to avoid double-spacing
+  - Use for accessibility labels, skip links, or hidden form fields
+
+**Visual/Icon Components:**
+- **LinearGradient** (`@tamagui/linear-gradient`):
+  - **NOT included in main `tamagui` export** - import from `'tamagui/linear-gradient'` or `'@tamagui/linear-gradient'`
+  - Pattern: `<LinearGradient colors={['$red10', '$yellow10']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} />`
+  - Props: `colors` (required, string[]), `locations` (number[], color stops 0-1), `start` (default: `{ x: 0.5, y: 0.0 }`), `end` (default: `{ x: 0.5, y: 1.0 }`)
+  - Native setup: Install `expo-linear-gradient`, then `import '@tamagui/native/setup-expo-linear-gradient'` before Tamagui imports
+  - Extends YStack, accepts all Tamagui style props and theme colors
+  - Alternative: Use `backgroundImage="linear-gradient(to bottom, $background, $color)"` style prop for simpler gradients
+  - Web: Uses CSS gradients (no setup needed)
+
+- **Separator** (`@tamagui/separator`):
+  - Pattern: `<Separator vertical />` or `<Separator />` (horizontal default)
+  - Props: `vertical` (boolean, shows separator vertically)
+  - Uses `borderWidth` and `borderColor` for styling
+  - Extends Stack with all Tamagui props
+  - Example: `<Separator alignSelf="stretch" vertical borderColor="$borderColor" />`
+
+- **Spinner** (`@tamagui/spinner`):
+  - Pattern: `<Spinner size="large" color="$green10" />`
+  - Props: `size` ("small" | "large"), `color` (string | ColorTokens)
+  - Extends YStack with all Tamagui props
+  - Wraps React Native ActivityIndicator (limited to small/large sizes)
+  - Accepts all theme colors
+
+- **Shapes** (`@tamagui/shapes`):
+  - **Square**: `<Square size="$4" />` or `<Square size={100} />`
+  - **Circle**: `<Circle size="$4" />` or `<Circle size={100} />` (Square with `circular={true}`)
+  - Props: `size` (string | number | tokens.size), `circular` (boolean, rounds border radius)
+  - Sets min and max width/height automatically
+  - Extends Stack with all Tamagui props
+  - Supports size tokens or plain numbers
+
 **Usage Pattern:**
 ```tsx
 import { Button, Checkbox, Input, Label, XStack, YStack } from 'tamagui'
@@ -1755,6 +1886,22 @@ import { Button, Checkbox, Input, Label, XStack, YStack } from 'tamagui'
 - Tabs: https://tamagui.dev/ui/tabs
 - Tooltip: https://tamagui.dev/ui/tooltip
 - Toast: https://tamagui.dev/ui/toast
+- Avatar: https://tamagui.dev/ui/avatar
+- Card: https://tamagui.dev/ui/card
+- Image: https://tamagui.dev/ui/image
+- ListItem: https://tamagui.dev/ui/list-item
+- Anchor: https://tamagui.dev/ui/anchor
+- FocusScope: https://tamagui.dev/ui/focus-scope
+- Group: https://tamagui.dev/ui/group
+- HTML Elements: https://tamagui.dev/ui/html-elements
+- RovingFocusGroup: https://tamagui.dev/ui/roving-focus
+- ScrollView: https://tamagui.dev/ui/scroll-view
+- Unspaced: https://tamagui.dev/ui/unspaced
+- VisuallyHidden: https://tamagui.dev/ui/visually-hidden
+- LinearGradient: https://tamagui.dev/ui/linear-gradient
+- Separator: https://tamagui.dev/ui/separator
+- Spinner: https://tamagui.dev/ui/spinner
+- Shapes: https://tamagui.dev/ui/shapes
 
 ### Code Standards
 

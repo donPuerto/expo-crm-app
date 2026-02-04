@@ -9,7 +9,7 @@ import {
   StatCard,
   type ActivityItem,
 } from '@/components/dashboard';
-import { ThemedView } from '@/components/themed-view';
+import { ThemedView } from '@/interface/components/themed-view';
 import { adminDashboard } from '@/features/dashboard/definitions';
 
 export default function AdminDashboard() {

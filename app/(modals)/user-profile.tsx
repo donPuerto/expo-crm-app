@@ -1,6 +1,8 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert } from 'react-native';
+import { YStack, XStack, H1, H2, Text, Button, ScrollView } from 'tamagui';
+import { Input, Avatar, getInitials, Label } from '@/interface/primitives';
 
 export default function UserProfile() {
   const router = useRouter();
@@ -33,54 +35,84 @@ export default function UserProfile() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>← Back</Text>
-        </Pressable>
-        <Text style={styles.headerTitle}>User Profile</Text>
-        <View style={styles.backButton} />
-      </View>
-
-      <ScrollView style={styles.content}>
-        <View style={styles.avatarContainer}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
-              {name
-                .split(' ')
-                .map(n => n[0])
-                .join('')}
+    <YStack flex={1} backgroundColor="$background">
+      <YStack backgroundColor="$primary" paddingTop={60} paddingHorizontal="$5" paddingBottom="$5">
+        <XStack justifyContent="space-between" alignItems="center">
+          <Button unstyled width={60} onPress={() => router.back()}>
+            <Text color="$primaryForeground" fontSize="$4">
+              ← Back
             </Text>
-          </View>
+          </Button>
+          <H1 fontSize="$6" fontWeight="bold" color="$primaryForeground">
+            User Profile
+          </H1>
+          <YStack width={60} />
+        </XStack>
+      </YStack>
+
+      <ScrollView flex={1}>
+        <YStack alignItems="center" paddingVertical="$8">
+          <Avatar circular size="$10" marginBottom="$3">
+            <Avatar.Fallback backgroundColor="$blue10">
+              <Text color="white" fontSize="$8" fontWeight="bold">
+                {getInitials(name)}
+              </Text>
+            </Avatar.Fallback>
+          </Avatar>
           {isEditing && (
-            <Pressable style={styles.changePhotoButton}>
-              <Text style={styles.changePhotoText}>Change Photo</Text>
-            </Pressable>
+            <Button size="$3" backgroundColor="$blue10" borderRadius="$2">
+              <Text color="white">Change Photo</Text>
+            </Button>
           )}
-        </View>
+        </YStack>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Personal Information</Text>
+        <YStack paddingHorizontal="$5" paddingVertical="$4">
+          <H2 fontSize="$6" fontWeight="bold" color="$color" marginBottom="$4">
+            Personal Information
+          </H2>
 
-          <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Full Name</Text>
+          <YStack marginBottom="$5">
+            <Label
+              htmlFor="fullName"
+              fontSize="$2"
+              fontWeight="600"
+              color="$gray11"
+              marginBottom="$2"
+              textTransform="uppercase"
+            >
+              Full Name
+            </Label>
             {isEditing ? (
-              <TextInput
-                style={styles.input}
-                value={name}
-                onChangeText={setName}
-                placeholder="Enter your name"
-              />
+              <Input value={name} onChangeText={setName} placeholder="Enter your name" />
             ) : (
-              <Text style={styles.value}>{name}</Text>
+              <YStack
+                paddingVertical="$3"
+                paddingHorizontal="$4"
+                backgroundColor="$card"
+                borderRadius="$3"
+                borderWidth={1}
+                borderColor="$borderColor"
+              >
+                <Text fontSize="$4" color="$color">
+                  {name}
+                </Text>
+              </YStack>
             )}
-          </View>
+          </YStack>
 
-          <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Email</Text>
+          <YStack marginBottom="$5">
+            <Label
+              htmlFor="email"
+              fontSize="$2"
+              fontWeight="600"
+              color="$gray11"
+              marginBottom="$2"
+              textTransform="uppercase"
+            >
+              Email
+            </Label>
             {isEditing ? (
-              <TextInput
-                style={styles.input}
+              <Input
                 value={email}
                 onChangeText={setEmail}
                 placeholder="Enter your email"
@@ -88,270 +120,235 @@ export default function UserProfile() {
                 autoCapitalize="none"
               />
             ) : (
-              <Text style={styles.value}>{email}</Text>
+              <YStack
+                paddingVertical="$3"
+                paddingHorizontal="$4"
+                backgroundColor="$card"
+                borderRadius="$3"
+                borderWidth={1}
+                borderColor="$borderColor"
+              >
+                <Text fontSize="$4" color="$color">
+                  {email}
+                </Text>
+              </YStack>
             )}
-          </View>
+          </YStack>
 
-          <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Role</Text>
+          <YStack marginBottom="$5">
+            <Label
+              htmlFor="role"
+              fontSize="$2"
+              fontWeight="600"
+              color="$gray11"
+              marginBottom="$2"
+              textTransform="uppercase"
+            >
+              Role
+            </Label>
             {isEditing ? (
-              <TextInput
-                style={styles.input}
-                value={role}
-                onChangeText={setRole}
-                placeholder="Enter your role"
-              />
+              <Input value={role} onChangeText={setRole} placeholder="Enter your role" />
             ) : (
-              <Text style={styles.value}>{role}</Text>
+              <YStack
+                paddingVertical="$3"
+                paddingHorizontal="$4"
+                backgroundColor="$card"
+                borderRadius="$3"
+                borderWidth={1}
+                borderColor="$borderColor"
+              >
+                <Text fontSize="$4" color="$color">
+                  {role}
+                </Text>
+              </YStack>
             )}
-          </View>
+          </YStack>
 
-          <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Phone</Text>
+          <YStack marginBottom="$5">
+            <Label
+              htmlFor="phone"
+              fontSize="$2"
+              fontWeight="600"
+              color="$gray11"
+              marginBottom="$2"
+              textTransform="uppercase"
+            >
+              Phone
+            </Label>
             {isEditing ? (
-              <TextInput
-                style={styles.input}
+              <Input
                 value={phone}
                 onChangeText={setPhone}
                 placeholder="Enter your phone"
                 keyboardType="phone-pad"
               />
             ) : (
-              <Text style={styles.value}>{phone}</Text>
+              <YStack
+                paddingVertical="$3"
+                paddingHorizontal="$4"
+                backgroundColor="$card"
+                borderRadius="$3"
+                borderWidth={1}
+                borderColor="$borderColor"
+              >
+                <Text fontSize="$4" color="$color">
+                  {phone}
+                </Text>
+              </YStack>
             )}
-          </View>
+          </YStack>
 
-          <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Company</Text>
+          <YStack marginBottom="$5">
+            <Label
+              htmlFor="company"
+              fontSize="$2"
+              fontWeight="600"
+              color="$gray11"
+              marginBottom="$2"
+              textTransform="uppercase"
+            >
+              Company
+            </Label>
             {isEditing ? (
-              <TextInput
-                style={styles.input}
-                value={company}
-                onChangeText={setCompany}
-                placeholder="Enter your company"
-              />
+              <Input value={company} onChangeText={setCompany} placeholder="Enter your company" />
             ) : (
-              <Text style={styles.value}>{company}</Text>
+              <YStack
+                paddingVertical="$3"
+                paddingHorizontal="$4"
+                backgroundColor="$card"
+                borderRadius="$3"
+                borderWidth={1}
+                borderColor="$borderColor"
+              >
+                <Text fontSize="$4" color="$color">
+                  {company}
+                </Text>
+              </YStack>
             )}
-          </View>
-        </View>
+          </YStack>
+        </YStack>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Activity Stats</Text>
+        <YStack paddingHorizontal="$5" paddingVertical="$4">
+          <H2 fontSize="$6" fontWeight="bold" color="$color" marginBottom="$4">
+            Activity Stats
+          </H2>
 
-          <View style={styles.statsGrid}>
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>24</Text>
-              <Text style={styles.statLabel}>Leads Created</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>156</Text>
-              <Text style={styles.statLabel}>Contacts Managed</Text>
-            </View>
-          </View>
+          <XStack gap="$3" marginBottom="$3">
+            <YStack
+              flex={1}
+              backgroundColor="$card"
+              padding="$5"
+              borderRadius="$3"
+              alignItems="center"
+              borderWidth={1}
+              borderColor="$borderColor"
+            >
+              <Text fontSize="$8" fontWeight="bold" color="$primary" marginBottom="$1">
+                24
+              </Text>
+              <Text fontSize="$2" color="$gray11" textAlign="center">
+                Leads Created
+              </Text>
+            </YStack>
+            <YStack
+              flex={1}
+              backgroundColor="$card"
+              padding="$5"
+              borderRadius="$3"
+              alignItems="center"
+              borderWidth={1}
+              borderColor="$borderColor"
+            >
+              <Text fontSize="$8" fontWeight="bold" color="$primary" marginBottom="$1">
+                156
+              </Text>
+              <Text fontSize="$2" color="$gray11" textAlign="center">
+                Contacts Managed
+              </Text>
+            </YStack>
+          </XStack>
 
-          <View style={styles.statsGrid}>
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>89%</Text>
-              <Text style={styles.statLabel}>Success Rate</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>12</Text>
-              <Text style={styles.statLabel}>Active Deals</Text>
-            </View>
-          </View>
-        </View>
+          <XStack gap="$3" marginBottom="$3">
+            <YStack
+              flex={1}
+              backgroundColor="$card"
+              padding="$5"
+              borderRadius="$3"
+              alignItems="center"
+              borderWidth={1}
+              borderColor="$borderColor"
+            >
+              <Text fontSize="$8" fontWeight="bold" color="$primary" marginBottom="$1">
+                89%
+              </Text>
+              <Text fontSize="$2" color="$gray11" textAlign="center">
+                Success Rate
+              </Text>
+            </YStack>
+            <YStack
+              flex={1}
+              backgroundColor="$card"
+              padding="$5"
+              borderRadius="$3"
+              alignItems="center"
+              borderWidth={1}
+              borderColor="$borderColor"
+            >
+              <Text fontSize="$8" fontWeight="bold" color="$primary" marginBottom="$1">
+                12
+              </Text>
+              <Text fontSize="$2" color="$gray11" textAlign="center">
+                Active Deals
+              </Text>
+            </YStack>
+          </XStack>
+        </YStack>
 
-        <View style={styles.section}>
+        <YStack paddingHorizontal="$5" paddingVertical="$4">
           {isEditing ? (
-            <View style={styles.buttonRow}>
-              <Pressable style={styles.secondaryButton} onPress={() => setIsEditing(false)}>
-                <Text style={styles.secondaryButtonText}>Cancel</Text>
-              </Pressable>
-              <Pressable style={styles.primaryButton} onPress={handleSave}>
-                <Text style={styles.primaryButtonText}>Save Changes</Text>
-              </Pressable>
-            </View>
+            <XStack gap="$3" marginBottom="$3">
+              <Button
+                flex={1}
+                size="$5"
+                variant="outlined"
+                borderRadius="$3"
+                onPress={() => setIsEditing(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                flex={1}
+                size="$5"
+                backgroundColor="$blue10"
+                borderRadius="$3"
+                onPress={handleSave}
+              >
+                <Text color="white">Save Changes</Text>
+              </Button>
+            </XStack>
           ) : (
-            <Pressable style={styles.primaryButton} onPress={() => setIsEditing(true)}>
-              <Text style={styles.primaryButtonText}>Edit Profile</Text>
-            </Pressable>
+            <Button
+              size="$5"
+              backgroundColor="$blue10"
+              borderRadius="$3"
+              marginBottom="$3"
+              onPress={() => setIsEditing(true)}
+            >
+              <Text color="white">Edit Profile</Text>
+            </Button>
           )}
 
-          <Pressable style={styles.logoutButton} onPress={handleLogout}>
-            <Text style={styles.logoutButtonText}>Logout</Text>
-          </Pressable>
-        </View>
+          <Button
+            size="$5"
+            variant="outlined"
+            borderColor="$red10"
+            borderRadius="$3"
+            onPress={handleLogout}
+          >
+            <Text color="$red10">Logout</Text>
+          </Button>
+        </YStack>
       </ScrollView>
-    </View>
+    </YStack>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8fafc',
-  },
-  header: {
-    backgroundColor: '#6366f1',
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  backButton: {
-    width: 60,
-  },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  content: {
-    flex: 1,
-  },
-  avatarContainer: {
-    alignItems: 'center',
-    paddingVertical: 32,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#6366f1',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  avatarText: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  changePhotoButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    backgroundColor: '#e0e7ff',
-  },
-  changePhotoText: {
-    fontSize: 14,
-    color: '#6366f1',
-    fontWeight: '600',
-  },
-  section: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1e293b',
-    marginBottom: 16,
-  },
-  fieldContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#64748b',
-    marginBottom: 8,
-    textTransform: 'uppercase',
-  },
-  value: {
-    fontSize: 16,
-    color: '#1e293b',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-  },
-  input: {
-    fontSize: 16,
-    color: '#1e293b',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#6366f1',
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 12,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#6366f1',
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#64748b',
-    textAlign: 'center',
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 12,
-  },
-  primaryButton: {
-    flex: 1,
-    backgroundColor: '#6366f1',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  primaryButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  secondaryButton: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-  },
-  secondaryButtonText: {
-    color: '#1e293b',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  logoutButton: {
-    backgroundColor: '#fff',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ef4444',
-  },
-  logoutButtonText: {
-    color: '#ef4444',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});

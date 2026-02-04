@@ -16,8 +16,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-reanimated';
 import config from '@/tamagui/tamagui.config';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/interface/components/themed-text';
+import { ThemedView } from '@/interface/components/themed-view';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { NAV_THEME } from '@/constants/theme';
 

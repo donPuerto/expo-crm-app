@@ -1,8 +1,8 @@
 import React from 'react';
 import { Pressable, StyleSheet, Switch, View } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/interface/components/themed-text';
+import { ThemedView } from '@/interface/components/themed-view';
 
 export default function SettingsScreen() {
   const [notifications, setNotifications] = React.useState(true);

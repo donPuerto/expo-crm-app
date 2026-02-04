@@ -1,7 +1,17 @@
-import { StyleSheet, Text, type TextProps } from 'react-native';
+/**
+ * DEPRECATED: Use Tamagui Text/SizableText directly
+ * This is a temporary compatibility wrapper during migration
+ *
+ * Migration Guide:
+ * - Replace `<ThemedText>` → `<Text>` from tamagui
+ * - Replace `<ThemedText type="title">` → `<H1>` or `<H2>` from tamagui
+ * - Replace `<ThemedText type="subtitle">` → `<H3>` from tamagui
+ * - Use `color="$color"` instead of lightColor/darkColor props
+ * - Use `fontSize="$4"` instead of fixed pixel sizes
+ */
 
-import { useThemeColor } from '@/hooks/use-theme-color';
-import { useFont } from '@/hooks/use-font';
+import { Text, styled } from 'tamagui';
+import type { TextProps } from 'tamagui';
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
@@ -9,61 +19,20 @@ export type ThemedTextProps = TextProps & {
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
 };
 
-export function ThemedText({
-  style,
-  lightColor,
-  darkColor,
-  type = 'default',
-  ...rest
-}: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-  const { fontFamily, getScaledFontSize } = useFont();
+const StyledText = styled(Text, {
+  color: '$color',
 
-  const baseStyles = {
-    default: {
-      fontSize: getScaledFontSize(16),
-      lineHeight: getScaledFontSize(24),
-      fontFamily,
+  variants: {
+    type: {
+      default: { fontSize: '$4', lineHeight: '$1' },
+      defaultSemiBold: { fontSize: '$4', lineHeight: '$1', fontWeight: '600' },
+      title: { fontSize: '$9', fontWeight: 'bold', lineHeight: '$1' },
+      subtitle: { fontSize: '$6', fontWeight: 'bold' },
+      link: { fontSize: '$4', lineHeight: '$1', color: '$blue10' },
     },
-    defaultSemiBold: {
-      fontSize: getScaledFontSize(16),
-      lineHeight: getScaledFontSize(24),
-      fontWeight: '600' as const,
-      fontFamily,
-    },
-    title: {
-      fontSize: getScaledFontSize(32),
-      fontWeight: 'bold' as const,
-      lineHeight: getScaledFontSize(32),
-      fontFamily,
-    },
-    subtitle: {
-      fontSize: getScaledFontSize(20),
-      fontWeight: 'bold' as const,
-      fontFamily,
-    },
-    link: {
-      lineHeight: getScaledFontSize(30),
-      fontSize: getScaledFontSize(16),
-      color: '#0a7ea4',
-      fontFamily,
-    },
-  };
+  } as const,
+});
 
-  return (
-    <Text
-      style={[
-        { color },
-        type === 'default' ? baseStyles.default : undefined,
-        type === 'title' ? baseStyles.title : undefined,
-        type === 'defaultSemiBold' ? baseStyles.defaultSemiBold : undefined,
-        type === 'subtitle' ? baseStyles.subtitle : undefined,
-        type === 'link' ? baseStyles.link : undefined,
-        style,
-      ]}
-      {...rest}
-    />
-  );
+export function ThemedText({ type = 'default', lightColor, darkColor, ...props }: ThemedTextProps) {
+  return <StyledText type={type} {...props} />;
 }
-
-// Styles are now dynamically generated in the component using useFont hook

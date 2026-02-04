@@ -1,8 +1,8 @@
 import React from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/interface/components/themed-text';
+import { ThemedView } from '@/interface/components/themed-view';
 
 type Task = {
   id: string;

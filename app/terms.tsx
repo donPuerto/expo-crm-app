@@ -10,8 +10,8 @@ import Animated, {
 
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/interface/components/themed-text';
+import { ThemedView } from '@/interface/components/themed-view';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 function AnimatedContent({ children, index }: { children: React.ReactNode; index: number }) {
@@ -55,7 +55,9 @@ export default function TermsScreen() {
           </ThemedText>
         </AnimatedContent>
         <AnimatedContent index={1}>
-          <ThemedText style={[styles.date, { color: mutedColor }]}>Last updated: January 2025</ThemedText>
+          <ThemedText style={[styles.date, { color: mutedColor }]}>
+            Last updated: January 2025
+          </ThemedText>
         </AnimatedContent>
 
         <AnimatedContent index={2}>

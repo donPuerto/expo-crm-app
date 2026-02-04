@@ -10,8 +10,8 @@ import {
   StatCard,
   type ActivityItem,
 } from '@/components/dashboard';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/interface/components/themed-text';
+import { ThemedView } from '@/interface/components/themed-view';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { createShadowStyle } from '@/lib/shadow-styles';
 import { usersDashboard } from '@/features/dashboard/definitions';
@@ -63,7 +63,12 @@ export default function UsersDashboard() {
             if (widget.type === 'chart') {
               const config = widget.config as { title: string; subtitle?: string };
               return (
-                <ChartCard key={widget.id} title={config.title} subtitle={config.subtitle} index={index}>
+                <ChartCard
+                  key={widget.id}
+                  title={config.title}
+                  subtitle={config.subtitle}
+                  index={index}
+                >
                   <>{/* Placeholder for chart - implement chart library integration here */}</>
                 </ChartCard>
               );

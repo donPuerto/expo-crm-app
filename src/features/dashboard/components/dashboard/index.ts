@@ -1,10 +1,9 @@
-export { default as DashboardWrapper } from './dashboard-wrapper';
-export { DashboardGrid } from './DashboardGrid';
-export { DashboardHeader } from './DashboardHeader';
-export { default as DashboardShell } from './DashboardShell';
+export { DashboardGrid } from './dashboard-grid';
+export { DashboardHeader } from './dashboard-header';
+export { default as DashboardShell } from './dashboard-shell';
 export { default as Sidebar } from './sidebar';
 export { default as Topbar } from './topbar';
-export { ActivityList } from './widgets/ActivityList';
-export type { ActivityItem } from './widgets/ActivityList';
-export { ChartCard } from './widgets/ChartCard';
-export { StatCard } from './widgets/StatCard';
+export { ActivityList } from './widgets/activity-list';
+export type { ActivityItem } from './widgets/activity-list';
+export { ChartCard } from './widgets/chart-card';
+export { StatCard } from './widgets/stat-card';

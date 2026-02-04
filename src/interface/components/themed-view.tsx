@@ -1,14 +1,21 @@
-import { View, type ViewProps } from 'react-native';
+/**
+ * DEPRECATED: Use Tamagui YStack/XStack directly
+ * This is a temporary compatibility wrapper during migration
+ *
+ * Migration Guide:
+ * - Replace `<ThemedView>` → `<YStack>` or `<XStack>` from tamagui
+ * - Use `backgroundColor="$background"` instead of lightColor/darkColor props
+ * - Use proper Stack components for better layout control
+ */
 
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { YStack } from 'tamagui';
+import type { YStackProps } from 'tamagui';
 
-export type ThemedViewProps = ViewProps & {
+export type ThemedViewProps = YStackProps & {
   lightColor?: string;
   darkColor?: string;
 };
 
-export function ThemedView({ style, lightColor, darkColor, ...otherProps }: ThemedViewProps) {
-  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
-
-  return <View style={[{ backgroundColor }, style]} {...otherProps} />;
+export function ThemedView({ lightColor, darkColor, ...props }: ThemedViewProps) {
+  return <YStack backgroundColor="$background" {...props} />;
 }

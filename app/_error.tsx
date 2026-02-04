@@ -1,8 +1,8 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from '@/interface/components/themed-text';
+import { ThemedView } from '@/interface/components/themed-view';
 
 export default function ErrorBoundary({ error, retry }: { error: Error; retry: () => void }) {
   const router = useRouter();
