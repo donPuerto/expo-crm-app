@@ -1,38 +1,27 @@
-/**
- * DEPRECATED: Use Tamagui Text/SizableText directly
- * This is a temporary compatibility wrapper during migration
- *
- * Migration Guide:
- * - Replace `<ThemedText>` → `<Text>` from tamagui
- * - Replace `<ThemedText type="title">` → `<H1>` or `<H2>` from tamagui
- * - Replace `<ThemedText type="subtitle">` → `<H3>` from tamagui
- * - Use `color="$color"` instead of lightColor/darkColor props
- * - Use `fontSize="$4"` instead of fixed pixel sizes
- */
+import React from 'react';
 
-import { Text, styled } from 'tamagui';
-import type { TextProps } from 'tamagui';
+import { Text, type GetProps } from '@/interface/primitives';
 
-export type ThemedTextProps = TextProps & {
-  lightColor?: string;
-  darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
+type BaseTextProps = GetProps<typeof Text>;
+
+export type ThemedTextType = 'default' | 'defaultSemiBold' | 'title' | 'subtitle' | 'link';
+
+export type ThemedTextProps = BaseTextProps & {
+  type?: ThemedTextType;
 };
 
-const StyledText = styled(Text, {
-  color: '$color',
-
-  variants: {
-    type: {
-      default: { fontSize: '$4', lineHeight: '$1' },
-      defaultSemiBold: { fontSize: '$4', lineHeight: '$1', fontWeight: '600' },
-      title: { fontSize: '$9', fontWeight: 'bold', lineHeight: '$1' },
-      subtitle: { fontSize: '$6', fontWeight: 'bold' },
-      link: { fontSize: '$4', lineHeight: '$1', color: '$blue10' },
-    },
-  } as const,
-});
-
-export function ThemedText({ type = 'default', lightColor, darkColor, ...props }: ThemedTextProps) {
-  return <StyledText type={type} {...props} />;
+export function ThemedText({ type = 'default', ...props }: ThemedTextProps) {
+  switch (type) {
+    case 'title':
+      return <Text fontSize="$8" fontWeight="800" {...props} />;
+    case 'subtitle':
+      return <Text fontSize="$6" fontWeight="700" {...props} />;
+    case 'defaultSemiBold':
+      return <Text fontWeight="700" {...props} />;
+    case 'link':
+      return <Text color="$primary" textDecorationLine="underline" {...props} />;
+    case 'default':
+    default:
+      return <Text {...props} />;
+  }
 }

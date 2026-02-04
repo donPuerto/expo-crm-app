@@ -33,7 +33,7 @@ interface RouteTransitionState {
 export function useRouteTransition(): RouteTransitionState {
   const pathname = usePathname();
   const [direction, setDirection] = useState<TransitionDirection>('none');
-  const [history, setHistory] = useState<string[]>([pathname]);
+  const [, setHistory] = useState<string[]>([pathname]);
 
   useEffect(() => {
     setHistory(prev => {

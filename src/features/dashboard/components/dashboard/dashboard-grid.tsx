@@ -1,3 +1,4 @@
+import React from 'react';
 import { XStack, YStack, useMedia } from 'tamagui';
 
 interface DashboardGridProps {

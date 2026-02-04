@@ -79,7 +79,6 @@ function AnimatedActivityItem({
         gap="$2"
         elevation={2}
         onPress={() => onPress?.(item)}
-        pressable={!!onPress}
       >
         <XStack justifyContent="space-between" alignItems="center">
           <Text fontWeight="600">{item.title}</Text>

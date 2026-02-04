@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert } from 'react-native';
 import { YStack, H1, Text, Button } from 'tamagui';
-import { Input } from '@/interface/primitives/input';
+import { Input } from '@/interface/primitives/input.tamagui';
 
 export default function AddContactScreen() {
   const router = useRouter();
@@ -64,12 +64,12 @@ export default function AddContactScreen() {
         marginTop="$5"
         size="$5"
         backgroundColor="$primary"
-        color="$primaryForeground"
-        fontWeight="600"
         borderRadius="$3"
         onPress={handleSave}
       >
-        Save Contact
+        <Text color="$primaryForeground" fontWeight="600">
+          Save Contact
+        </Text>
       </Button>
     </YStack>
   );

@@ -8,7 +8,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { Input } from '@/interface/primitives/input';
+import { Input } from '@/interface/primitives/input.tamagui';
 
 type User = {
   id: string;
@@ -117,13 +117,10 @@ export default function UserDetailScreen() {
         <Text fontSize="$4" fontWeight="600" color="$red10" marginBottom="$5">
           User not found
         </Text>
-        <Button
-          size="$4"
-          backgroundColor="$primary"
-          color="$primaryForeground"
-          onPress={() => router.back()}
-        >
-          Go Back
+        <Button size="$4" backgroundColor="$primary" onPress={() => router.back()}>
+          <Text color="$primaryForeground" fontWeight="600">
+            Go Back
+          </Text>
         </Button>
       </YStack>
     );
@@ -185,11 +182,12 @@ export default function UserDetailScreen() {
           <Button
             size="$3"
             backgroundColor={isEditing ? '$primary' : 'transparent'}
-            color={isEditing ? '$primaryForeground' : '$primary'}
             borderRadius="$2"
             onPress={() => (isEditing ? handleSave() : setIsEditing(true))}
           >
-            {isEditing ? 'Save' : 'Edit'}
+            <Text color={isEditing ? '$primaryForeground' : '$primary'} fontWeight="600">
+              {isEditing ? 'Save' : 'Edit'}
+            </Text>
           </Button>
         </XStack>
       </YStack>
@@ -207,13 +205,7 @@ export default function UserDetailScreen() {
           >
             <YStack gap="$3">
               {isEditing ? (
-                <Input
-                  value={name}
-                  onChangeText={setName}
-                  placeholder="Full Name"
-                  fontSize="$8"
-                  fontWeight="bold"
-                />
+                <Input value={name} onChangeText={setName} placeholder="Full Name" size="$6" />
               ) : (
                 <H1 fontSize="$8" fontWeight="bold" color="$color" marginBottom="$2">
                   {name}
@@ -369,24 +361,26 @@ export default function UserDetailScreen() {
                     flex={1}
                     size="$4"
                     backgroundColor="$primary"
-                    color="$primaryForeground"
                     borderRadius="$2"
                     elevation="$2"
                     onPress={() => Alert.alert('Contact', `Calling ${name}...`)}
                   >
-                    Call
+                    <Text color="$primaryForeground" fontWeight="600">
+                      Call
+                    </Text>
                   </Button>
                   <Button
                     flex={1}
                     size="$4"
                     backgroundColor="$card"
-                    color="$color"
                     borderWidth={1}
                     borderColor="$borderColor"
                     borderRadius="$2"
                     onPress={() => Alert.alert('Email', `Opening email to ${email}...`)}
                   >
-                    Email
+                    <Text color="$color" fontWeight="600">
+                      Email
+                    </Text>
                   </Button>
                 </XStack>
               </>

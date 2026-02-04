@@ -145,6 +145,15 @@ export const allThemes = {
 // Create Tamagui configuration
 const config = createTamagui({
   ...defaultConfig,
+  media: {
+    ...defaultConfig.media,
+    // Extra media keys used throughout the app
+    xxl: { maxWidth: 1536 },
+    short: { maxHeight: 820 },
+    tall: { minHeight: 820 },
+    hoverNone: { hover: 'none' },
+    pointerCoarse: { pointer: 'coarse' },
+  },
   themes: allThemes,
   animations,
   // v5 settings (when using @tamagui/config/v5):
@@ -157,6 +166,12 @@ const config = createTamagui({
 export type AppConfig = typeof config;
 
 declare module '@tamagui/core' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface TamaguiCustomConfig extends AppConfig {}
+}
+
+declare module 'tamagui' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface TamaguiCustomConfig extends AppConfig {}
 }
 

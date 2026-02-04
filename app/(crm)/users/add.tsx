@@ -8,8 +8,16 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { YStack, XStack, Text, H1, ScrollView, Button } from 'tamagui';
-import { Input } from '@/interface/primitives/input';
+import { YStack, Text, H1, ScrollView, Button } from 'tamagui';
+import { Input } from '@/interface/primitives/input.tamagui';
+import {
+  SelectField,
+  SwitchField,
+  validateValues,
+  hasErrors,
+  v,
+  type FieldErrors,
+} from '@/interface/components/form-fields';
 
 function AnimatedInput({
   label,
@@ -18,6 +26,7 @@ function AnimatedInput({
   placeholder,
   keyboardType,
   autoCapitalize,
+  error,
   index,
 }: {
   label: string;
@@ -26,6 +35,7 @@ function AnimatedInput({
   placeholder: string;
   keyboardType?: 'default' | 'email-address' | 'phone-pad';
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  error?: string;
   index: number;
 }) {
   const opacity = useSharedValue(0);
@@ -44,17 +54,29 @@ function AnimatedInput({
   return (
     <Animated.View style={animatedStyle}>
       <YStack marginBottom="$5">
-        <Text fontSize="$2" fontWeight="600" marginBottom="$2" opacity={0.8}>
+        <Text
+          fontSize="$2"
+          fontWeight="600"
+          marginBottom="$2"
+          opacity={0.8}
+          color={error ? '$red10' : '$color'}
+        >
           {label}
         </Text>
         <Input
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor="$gray9"
           keyboardType={keyboardType}
           autoCapitalize={autoCapitalize}
+          borderColor={error ? '$red10' : '$borderColor'}
         />
+
+        {error && (
+          <Text fontSize="$2" color="$red10" marginTop="$2">
+            {error}
+          </Text>
+        )}
       </YStack>
     </Animated.View>
   );
@@ -67,13 +89,29 @@ export default function AddUserScreen() {
   const [phone, setPhone] = useState('');
   const [role, setRole] = useState('');
   const [department, setDepartment] = useState('');
-  const [status, setStatus] = useState<'active' | 'inactive' | 'pending'>('active');
+  const [isActive, setIsActive] = useState(true);
+  const [sendInvite, setSendInvite] = useState(true);
+  type UserFieldKey = 'name' | 'email' | 'role';
+  const [errors, setErrors] = useState<FieldErrors<UserFieldKey>>({});
 
   const handleSave = () => {
-    if (!name || !email || !role) {
-      Alert.alert('Error', 'Please fill all required fields (Name, Email, Role)');
+    const nextErrors = validateValues(
+      { name, email, role },
+      {
+        name: [v.required('Full name is required')],
+        email: [v.required('Email is required'), v.email()],
+        role: [v.required('Role is required')],
+      }
+    );
+
+    setErrors(nextErrors);
+
+    if (hasErrors(nextErrors)) {
+      const first = Object.values(nextErrors).find(Boolean);
+      Alert.alert('Error', first ?? 'Please check the form');
       return;
     }
+
     Alert.alert('Success', 'User added successfully');
     router.back();
   };
@@ -91,18 +129,26 @@ export default function AddUserScreen() {
         <AnimatedInput
           label="Full Name *"
           value={name}
-          onChangeText={setName}
+          onChangeText={text => {
+            setName(text);
+            if (errors.name) setErrors(prev => ({ ...prev, name: undefined }));
+          }}
           placeholder="Enter full name"
+          error={errors.name}
           index={0}
         />
 
         <AnimatedInput
           label="Email Address *"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={text => {
+            setEmail(text);
+            if (errors.email) setErrors(prev => ({ ...prev, email: undefined }));
+          }}
           placeholder="Enter email address"
           keyboardType="email-address"
           autoCapitalize="none"
+          error={errors.email}
           index={1}
         />
 
@@ -115,13 +161,34 @@ export default function AddUserScreen() {
           index={2}
         />
 
-        <AnimatedInput
-          label="Role *"
-          value={role}
-          onChangeText={setRole}
-          placeholder="e.g., Administrator, Manager, Agent"
-          index={3}
-        />
+        <Animated.View
+          style={useAnimatedStyle(() => ({
+            opacity: withDelay(3 * 50, withTiming(1, { duration: 300 })),
+            transform: [{ translateX: withDelay(3 * 50, withSpring(0, { damping: 15 })) }],
+          }))}
+        >
+          <YStack marginBottom="$5">
+            <SelectField
+              id="role"
+              label="Role"
+              placeholder="Select user role"
+              options={[
+                { label: 'Administrator', value: 'admin' },
+                { label: 'Manager', value: 'manager' },
+                { label: 'Sales Agent', value: 'agent' },
+                { label: 'Support', value: 'support' },
+                { label: 'Viewer', value: 'viewer' },
+              ]}
+              value={role}
+              onValueChange={next => {
+                setRole(next);
+                if (errors.role) setErrors(prev => ({ ...prev, role: undefined }));
+              }}
+              required
+              error={errors.role}
+            />
+          </YStack>
+        </Animated.View>
 
         <AnimatedInput
           label="Department"
@@ -131,40 +198,49 @@ export default function AddUserScreen() {
           index={4}
         />
 
-        <YStack marginBottom="$6">
-          <Text fontSize="$2" fontWeight="600" marginBottom="$2" opacity={0.8}>
-            Status
-          </Text>
-          <XStack gap="$3" marginTop="$2">
-            {(['active', 'inactive', 'pending'] as const).map(s => (
-              <Button
-                key={s}
-                flex={1}
-                size="$4"
-                borderRadius="$2"
-                borderWidth={1}
-                backgroundColor={status === s ? '$primary' : '$card'}
-                borderColor={status === s ? '$primary' : '$borderColor'}
-                color={status === s ? '$primaryForeground' : '$color'}
-                onPress={() => setStatus(s)}
-              >
-                {s.charAt(0).toUpperCase() + s.slice(1)}
-              </Button>
-            ))}
-          </XStack>
-        </YStack>
+        <Animated.View
+          style={useAnimatedStyle(() => ({
+            opacity: withDelay(5 * 50, withTiming(1, { duration: 300 })),
+            transform: [{ translateX: withDelay(5 * 50, withSpring(0, { damping: 15 })) }],
+          }))}
+        >
+          <YStack marginBottom="$5">
+            <SwitchField
+              id="isActive"
+              label="Active Status"
+              description="User can access the system"
+              checked={isActive}
+              onCheckedChange={setIsActive}
+            />
+          </YStack>
+        </Animated.View>
+
+        <Animated.View
+          style={useAnimatedStyle(() => ({
+            opacity: withDelay(6 * 50, withTiming(1, { duration: 300 })),
+            transform: [{ translateX: withDelay(6 * 50, withSpring(0, { damping: 15 })) }],
+          }))}
+        >
+          <YStack marginBottom="$6">
+            <SwitchField
+              id="sendInvite"
+              label="Send Invitation Email"
+              description="User will receive login credentials"
+              checked={sendInvite}
+              onCheckedChange={setSendInvite}
+            />
+          </YStack>
+        </Animated.View>
 
         <Button
           marginTop="$2"
           size="$5"
-          backgroundColor="$primary"
-          color="$primaryForeground"
-          fontWeight="600"
+          backgroundColor="$blue10"
           borderRadius="$3"
           elevation={2}
           onPress={handleSave}
         >
-          Save User
+          <Text color="white">Save User</Text>
         </Button>
       </ScrollView>
     </YStack>

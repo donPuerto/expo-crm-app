@@ -1,7 +1,7 @@
-﻿import { YStack, XStack, Text, ScrollView } from 'tamagui';
-import { IconSymbol } from '@/interface/primitives/icon-symbol';
+﻿import React, { useEffect } from 'react';
+import { YStack, XStack, Text, ScrollView, useTheme } from 'tamagui';
+import { Briefcase, Users, Settings, User, Inbox } from '@/interface/primitives';
 import { usePathname, useRouter } from 'expo-router';
-import { useEffect } from 'react';
 import { Pressable } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -14,16 +14,16 @@ import Animated, {
 type NavItem = {
   label: string;
   href: string;
-  icon: Parameters<typeof IconSymbol>[0]['name'];
+  Icon: React.ComponentType<{ size?: number; color?: string }>;
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Sales', href: '/(dashboards)/sales', icon: 'chart.bar.fill' },
-  { label: 'Users', href: '/(dashboards)/users', icon: 'person.3.fill' },
-  { label: 'Admin', href: '/(dashboards)/admin', icon: 'gearshape.fill' },
-  { label: 'Leads', href: '/(crm)/leads', icon: 'person.crop.circle.fill' },
-  { label: 'Contacts', href: '/(crm)/contacts', icon: 'tray.full.fill' },
-  { label: 'Manage Users', href: '/(crm)/users', icon: 'person.2.fill' },
+  { label: 'Sales', href: '/(dashboards)/sales', Icon: Briefcase },
+  { label: 'Users', href: '/(dashboards)/users', Icon: Users },
+  { label: 'Admin', href: '/(dashboards)/admin', Icon: Settings },
+  { label: 'Leads', href: '/(crm)/leads', Icon: User },
+  { label: 'Contacts', href: '/(crm)/contacts', Icon: Inbox },
+  { label: 'Manage Users', href: '/(crm)/users', Icon: Users },
 ];
 
 function AnimatedNavItem({
@@ -37,6 +37,7 @@ function AnimatedNavItem({
   isActive: boolean;
   onPress: () => void;
 }) {
+  const theme = useTheme();
   const opacity = useSharedValue(0);
   const translateX = useSharedValue(-20);
   const scale = useSharedValue(0.95);
@@ -74,10 +75,9 @@ function AnimatedNavItem({
       >
         <Pressable onPress={onPress} onPressIn={handlePressIn} onPressOut={handlePressOut}>
           <XStack alignItems="center" gap="$3">
-            <IconSymbol
-              name={item.icon}
+            <item.Icon
               size={20}
-              color={isActive ? '$primary' : '$icon'}
+              color={isActive ? theme.primary.get() : theme.mutedForeground.get()}
             />
             <Text
               fontSize="$4"
@@ -124,7 +124,8 @@ export default function Sidebar() {
             paddingHorizontal="$2.5"
             paddingVertical="$1"
             borderRadius="$3"
-            backgroundColor="$primary" + '20'
+            borderWidth={1}
+            borderColor="$primary"
           >
             <Text fontSize="$1" fontWeight="700" color="$primary">
               New

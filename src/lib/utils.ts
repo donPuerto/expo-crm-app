@@ -1,8 +1,37 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+type ClassValue =
+  | string
+  | number
+  | null
+  | undefined
+  | false
+  | Record<string, boolean | null | undefined>
+  | ClassValue[];
 
+function flattenClassValues(input: ClassValue, out: string[]) {
+  if (!input) return;
+
+  if (typeof input === 'string' || typeof input === 'number') {
+    out.push(String(input));
+    return;
+  }
+
+  if (Array.isArray(input)) {
+    for (const item of input) flattenClassValues(item, out);
+    return;
+  }
+
+  if (typeof input === 'object') {
+    for (const [key, value] of Object.entries(input)) {
+      if (value) out.push(key);
+    }
+  }
+}
+
+// Legacy helper kept for compatibility; Tailwind/NativeWind is not used.
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+  const parts: string[] = [];
+  for (const input of inputs) flattenClassValues(input, parts);
+  return parts.join(' ');
 }
 
 /**

@@ -42,8 +42,7 @@ export default function ParallaxScrollView({
   return (
     <Animated.ScrollView
       ref={scrollRef}
-      backgroundColor="$background"
-      f={1}
+      style={{ flex: 1 }}
       scrollEventThrottle={16}
       removeClippedSubviews={true}
     >

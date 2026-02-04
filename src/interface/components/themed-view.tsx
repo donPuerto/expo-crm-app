@@ -1,21 +1,9 @@
-/**
- * DEPRECATED: Use Tamagui YStack/XStack directly
- * This is a temporary compatibility wrapper during migration
- *
- * Migration Guide:
- * - Replace `<ThemedView>` → `<YStack>` or `<XStack>` from tamagui
- * - Use `backgroundColor="$background"` instead of lightColor/darkColor props
- * - Use proper Stack components for better layout control
- */
+import React from 'react';
 
-import { YStack } from 'tamagui';
-import type { YStackProps } from 'tamagui';
+import { View, type GetProps } from '@/interface/primitives';
 
-export type ThemedViewProps = YStackProps & {
-  lightColor?: string;
-  darkColor?: string;
-};
+export type ThemedViewProps = GetProps<typeof View>;
 
-export function ThemedView({ lightColor, darkColor, ...props }: ThemedViewProps) {
-  return <YStack backgroundColor="$background" {...props} />;
+export function ThemedView(props: ThemedViewProps) {
+  return <View {...props} />;
 }

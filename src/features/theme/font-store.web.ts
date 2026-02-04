@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { Platform } from 'react-native';
 
 export type FontFamily = 'Inter' | 'Roboto' | 'OpenSans' | 'System';
 
@@ -44,14 +43,14 @@ const saveToStorage = (state: Partial<FontState>) => {
 // Load initial state from storage
 const initialState = loadFromStorage();
 
-export const useFontStore = create<FontState>((set) => ({
+export const useFontStore = create<FontState>(set => ({
   fontFamily: initialState.fontFamily ?? defaultFontFamily,
   fontScale: initialState.fontScale ?? defaultFontScale,
-  setFontFamily: (family) => {
+  setFontFamily: family => {
     set({ fontFamily: family });
     saveToStorage({ fontFamily: family, fontScale: useFontStore.getState().fontScale });
   },
-  setFontScale: (scale) => {
+  setFontScale: scale => {
     const clampedScale = Math.max(0.8, Math.min(1.5, scale));
     set({ fontScale: clampedScale });
     saveToStorage({ fontFamily: useFontStore.getState().fontFamily, fontScale: clampedScale });

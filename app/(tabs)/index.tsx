@@ -16,13 +16,13 @@ import {
   Plus,
   X as XIcon,
   Check,
-  Menu,
   Sun,
   Moon,
   Home as HomeIcon,
   Users,
   Settings,
-} from 'lucide-react-native';
+  Menu as MenuIcon,
+} from '@/interface/primitives';
 
 import { Text } from '@/components/ui/text';
 import { Card, CardContent } from '@/components/ui/card';
@@ -278,7 +278,7 @@ export default function HomeScreen() {
         <View style={styles.headerContent}>
           <View style={styles.headerRow}>
             <Pressable onPress={() => setMenuOpen(!menuOpen)} style={styles.menuButton}>
-              <Menu size={24} color="#ffffff" />
+              <MenuIcon size={24} color="#ffffff" />
             </Pressable>
             <Text variant="h3" style={[styles.headerTitle, { fontFamily, color: '#ffffff' }]}>
               Home
