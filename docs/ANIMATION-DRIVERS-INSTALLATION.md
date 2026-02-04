@@ -109,9 +109,9 @@ src/
 │   │   ├── directional-page-transition.tsx (existing)
 │   │   ├── carousel-transition.tsx (existing)
 │   │   └── page-transition-examples.tsx (existing)
-│   ├── hooks/
-│   │   └── use-route-transition.ts (existing)
 │   └── transitions.ts (updated)
+├── hooks/
+│   └── use-route-transition.ts (existing)
 docs/
 ├── ANIMATIONS-GUIDE.md (existing)
 ├── ANIMATION-IMPLEMENTATION-SUMMARY.md (existing)

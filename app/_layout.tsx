@@ -1,3 +1,5 @@
+import 'react-native-reanimated';
+
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 import { ThemeProvider } from '@react-navigation/native';
@@ -13,11 +15,9 @@ import {
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
-import 'react-native-reanimated';
 import config from '@/tamagui/tamagui.config';
 
-import { ThemedText } from '@/interface/components/themed-text';
-import { ThemedView } from '@/interface/components/themed-view';
+import { Paragraph, SizableText } from '@/interface/primitives';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { NAV_THEME } from '@/constants/theme';
 
@@ -62,13 +62,20 @@ export function useThemePreference() {
 // Purpose: render a fallback UI for unhandled errors.
 export function ErrorBoundary({ error, retry }: { error: Error; retry: () => void }) {
   return (
-    <ThemedView style={styles.errorContainer}>
-      <ThemedText type="title">Something went wrong!</ThemedText>
-      <ThemedText style={styles.errorText}>{error.message}</ThemedText>
-      <ThemedText type="link" onPress={retry} style={styles.retryButton}>
+    <View style={styles.errorContainer}>
+      <SizableText size="$8" fontWeight="800">
+        Something went wrong!
+      </SizableText>
+      <Paragraph style={styles.errorText}>{error.message}</Paragraph>
+      <Paragraph
+        color="$primary"
+        textDecorationLine="underline"
+        onPress={retry}
+        style={styles.retryButton}
+      >
         Try again
-      </ThemedText>
-    </ThemedView>
+      </Paragraph>
+    </View>
   );
 }
 

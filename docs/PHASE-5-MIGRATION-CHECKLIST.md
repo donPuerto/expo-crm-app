@@ -24,15 +24,14 @@
 ```tsx
 import { Apple, Chrome, Github } from 'lucide-react-native';
 import { View, StyleSheet } from 'react-native';
-import { Button } from '@/components/ui/button';
-import { Icon } from '@/components/ui/icon';
+import { Button } from '@/interface/primitives';
 ```
 
 **Migration Tasks:**
 
 - [ ] Replace `lucide-react-native` → `@tamagui/lucide-icons`
-- [ ] Replace `Button from @/components/ui/button` → `Button from 'tamagui'`
-- [ ] Replace `Icon` component with direct Lucide icon usage
+- [ ] Use `Button` from `@/interface/primitives`
+- [ ] Replace any `Icon` wrapper usage with direct Lucide icon usage
 - [ ] Replace `View` → `XStack`
 - [ ] Remove `StyleSheet.create`
 - [ ] Convert `flexDirection: 'row'` → XStack default
@@ -45,7 +44,7 @@ import { Icon } from '@/components/ui/icon';
 
 ```tsx
 import { Apple, Chrome, Github } from '@tamagui/lucide-icons';
-import { XStack, Button } from 'tamagui';
+import { XStack, Button } from '@/interface/primitives';
 
 export function SocialConnections() {
   return (
@@ -115,15 +114,12 @@ export default function DashboardWrapper({ children, showSidebar = true, showTop
 
 ```tsx
 import { StyleSheet, View } from 'react-native';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { useThemeColor } from '@/hooks/use-theme-color';
 ```
 
 **Migration Tasks:**
 
-- [ ] Replace `ThemedText` → `H1`, `Text` from tamagui
-- [ ] Replace `ThemedView` → `YStack`
+- [ ] Use Tamagui layout + typography primitives (`XStack`/`YStack`, `H1`/`Text`)
 - [ ] Replace `View` → `XStack` for row layouts
 - [ ] Remove `useThemeColor` hook (use theme tokens)
 - [ ] Remove `StyleSheet.create`
@@ -246,16 +242,13 @@ export function DashboardGrid({ children, columns = 2, gap = '$3' }) {
 **Current State:**
 
 ```tsx
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { FileText } from '@/interface/primitives';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 ```
 
 **Migration Tasks:**
 
-- [ ] Replace `ThemedView` → `YStack`
-- [ ] Replace `ThemedText` → `Text`
+- [ ] Replace legacy wrappers → `YStack`/`Text`
 - [ ] Replace `View` → `YStack` or `XStack` as appropriate
 - [ ] Replace `ScrollView` → `ScrollView` from tamagui
 - [ ] Replace `Pressable` → Tamagui's built-in press handling on `YStack`
@@ -264,13 +257,12 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 - [ ] Remove `useThemeColor` hook (use theme tokens)
 - [ ] Convert border colors → `borderColor="$borderColor"`
 - [ ] Keep Reanimated animations
-- [ ] Keep `IconSymbol` (iOS SF Symbols component)
+- [ ] Use Lucide icons from `@/interface/primitives` (for example `FileText`)
 
 **After:**
 
 ```tsx
-import { YStack, XStack, Text, ScrollView } from 'tamagui';
-import { IconSymbol } from '@/interface/primitives/icon-symbol';
+import { YStack, XStack, Text, ScrollView, FileText } from '@/interface/primitives';
 import { Pressable } from 'react-native'; // or migrate to YStack onPress
 import Animated, {
   useAnimatedStyle,
@@ -306,15 +298,12 @@ export default function Sidebar() {
 **Current State:**
 
 ```tsx
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 ```
 
 **Migration Tasks:**
 
-- [ ] Replace `ThemedView` → `XStack`
-- [ ] Replace `ThemedText` → `Text`
+- [ ] Replace legacy wrappers → `XStack`/`Text`
 - [ ] Remove `StyleSheet.create`
 - [ ] Remove `useThemeColor` hook
 - [ ] Convert border/background colors → theme tokens
@@ -349,93 +338,46 @@ export default function Topbar() {
 
 ## 3. Shared Components (13 files)
 
-### ✅ themed-text.tsx
+### ✅ Typography (Paragraph / SizableText)
 
-**Current State:**
-
-```tsx
-import { StyleSheet, Text, type TextProps } from 'react-native';
-import { useThemeColor } from '@/hooks/use-theme-color';
-import { useFont } from '@/hooks/use-font';
-```
-
-**Migration Tasks:**
-
-- [ ] Wrap Tamagui `Text` or `SizableText` component
-- [ ] Remove `useThemeColor` hook (use `$color` token)
-- [ ] Remove `useFont` hook (Tamagui handles fonts)
-- [ ] Remove `StyleSheet` usage
-- [ ] Map font sizes to Tamagui size tokens (`$3`, `$4`, `$8`, etc.)
-- [ ] Use `fontWeight` prop directly
-- [ ] Keep type variants but simplify implementation
-- [ ] Use Tamagui's built-in responsive font sizing
-
-**After:**
+Use typography primitives directly from the shared primitives surface:
 
 ```tsx
-import { Text, styled } from 'tamagui';
-import type { TextProps } from 'tamagui';
+import { Paragraph, SizableText, Text } from '@/interface/primitives';
 
-export type ThemedTextProps = TextProps & {
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
-};
-
-const StyledText = styled(Text, {
-  color: '$color',
-
-  variants: {
-    type: {
-      default: { fontSize: '$4', lineHeight: '$6' },
-      defaultSemiBold: { fontSize: '$4', lineHeight: '$6', fontWeight: '600' },
-      title: { fontSize: '$9', fontWeight: 'bold', lineHeight: '$9' },
-      subtitle: { fontSize: '$6', fontWeight: 'bold' },
-      link: { fontSize: '$4', lineHeight: '$7', color: '$blue10' },
-    },
-  } as const,
-
-  defaultVariants: {
-    type: 'default',
-  },
-});
-
-export function ThemedText({ type = 'default', ...props }: ThemedTextProps) {
-  return <StyledText type={type} {...props} />;
+export function Example() {
+  return (
+    <>
+      <SizableText size="$8" fontWeight="800">
+        Title
+      </SizableText>
+      <Paragraph>Body copy goes here.</Paragraph>
+      <Text fontWeight="700">Inline emphasis</Text>
+    </>
+  );
 }
 ```
-
-**Lines Saved:** ~25 lines
 
 ---
 
-### ✅ themed-view.tsx
+### ✅ Layout (View / XStack / YStack)
 
-**Current State:**
-
-```tsx
-import { View, type ViewProps } from 'react-native';
-import { useThemeColor } from '@/hooks/use-theme-color';
-```
-
-**Migration Tasks:**
-
-- [ ] Replace with Tamagui `View` or `YStack`
-- [ ] Remove `useThemeColor` hook
-- [ ] Use `$background` token directly
-- [ ] Simplify to single-prop interface
-
-**After:**
+Use layout primitives directly (no wrapper layer):
 
 ```tsx
-import { View, type ViewProps } from 'tamagui';
+import { View, XStack, YStack } from '@/interface/primitives';
 
-export type ThemedViewProps = ViewProps;
-
-export function ThemedView({ ...props }: ThemedViewProps) {
-  return <View backgroundColor="$background" {...props} />;
+export function Example() {
+  return (
+    <YStack gap="$3" padding="$4" backgroundColor="$background">
+      <XStack justifyContent="space-between">
+        <View />
+        <View />
+      </XStack>
+    </YStack>
+  );
 }
 ```
-
-**Lines Saved:** ~8 lines
 
 ---
 
@@ -451,12 +393,12 @@ import Animated, {
   useAnimatedStyle,
   useScrollOffset,
 } from 'react-native-reanimated';
-import { ThemedView } from '@/components/themed-view';
+import { YStack } from 'tamagui';
 ```
 
 **Migration Tasks:**
 
-- [ ] Replace `ThemedView` → `YStack`
+- [ ] Use `YStack` (or `View`) directly for layout
 - [ ] Replace `Animated.ScrollView` → Consider wrapping Tamagui `ScrollView` with Animated.createAnimatedComponent
 - [ ] OR keep `Animated.ScrollView` (works fine)
 - [ ] Remove `StyleSheet.create`
@@ -713,7 +655,7 @@ import { View, Text, styled, useMedia, useTheme } from '@tamagui/core';
 ### Phase 5.1: Quick Wins (Start Here)
 
 1. ✅ topbar.tsx (simplest, 10 lines saved)
-2. ✅ themed-view.tsx (simple wrapper, 8 lines saved)
+2. ✅ remove legacy layout wrapper (simple cleanup)
 3. ✅ social-connections.tsx (straightforward, 20 lines saved)
 4. ✅ DashboardGrid.tsx (simple layout, 10 lines saved)
 
@@ -721,7 +663,7 @@ import { View, Text, styled, useMedia, useTheme } from '@tamagui/core';
 
 5. ✅ dashboard-wrapper.tsx (15 lines saved)
 6. ✅ DashboardShell.tsx (consolidate or remove)
-7. ✅ themed-text.tsx (25 lines saved, important component)
+7. ✅ remove legacy text wrapper (clean typography surface)
 
 ### Phase 5.3: Complex Components
 

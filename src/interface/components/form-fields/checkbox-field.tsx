@@ -1,7 +1,13 @@
 import React from 'react';
-import { YStack, XStack, Label, Checkbox, Text } from '@/interface/primitives';
-import { Check } from '@tamagui/lucide-icons';
-import type { GetProps } from 'tamagui';
+import {
+  YStack,
+  XStack,
+  Label,
+  Checkbox,
+  Text,
+  Check,
+  type GetProps,
+} from '@/interface/primitives';
 
 export interface CheckboxFieldProps {
   id: string;

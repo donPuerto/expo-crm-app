@@ -5,7 +5,7 @@
 
 ## Overview
 
-Phase 6 focuses on migrating CRM form pages and components that use React Native TextInput combined with ThemedText/ThemedView wrappers to pure Tamagui components (Input, YStack, Text, Button).
+Phase 6 focuses on migrating CRM form pages and components that used React Native TextInput plus older custom theme wrappers to pure Tamagui components (Input, YStack, Text, Button).
 
 ## Objectives
 
@@ -80,8 +80,7 @@ Migrated **3 CRM add forms** to Tamagui:
 
 **Before (257 lines):**
 
-- ThemedText with type prop
-- ThemedView wrapper
+- Legacy theme wrapper components
 - StyleSheet.create (14 style rules)
 - useThemeColor (5 hook calls)
 - createShadowStyle utility
@@ -104,14 +103,14 @@ Migrated **3 CRM add forms** to Tamagui:
 
 ```tsx
 // BEFORE
-<ThemedView style={[styles.container, { backgroundColor }]}>
+<View style={[styles.container, { backgroundColor }]}>
   <ScrollView contentContainerStyle={styles.scrollContent}>
-    <ThemedText type="title" style={[styles.title, { color: textColor }]}>
+    <Text style={[styles.title, { color: textColor }]}>
       Add New User
-    </ThemedText>
+    </Text>
 
     <View style={styles.inputContainer}>
-      <ThemedText style={styles.label}>Full Name *</ThemedText>
+      <Text style={styles.label}>Full Name *</Text>
       <TextInput
         style={[styles.input, { backgroundColor: cardBg, borderColor, color: textColor }]}
         value={name}
@@ -328,7 +327,7 @@ Migrated **3 CRM add forms** to Tamagui:
 
 ### Future Phases
 
-- **Phase 7:** Remove ThemedText/ThemedView compatibility wrappers
+- **Phase 7:** Remove any remaining legacy wrapper usage
 - **Phase 8:** Update copilot-instructions.md with Form patterns
 - **Phase 9:** Create reusable Form layout components
 

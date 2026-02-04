@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import { useFontStore } from '@/store/font-store';
+import { useFontStore } from '@/features/theme/font-store';
 
 /**
  * Hook to get current font settings and apply them dynamically

@@ -322,10 +322,9 @@ docs/                        → docs/ (keep)
 src/components/              → src/interface/
   ui/                        → src/interface/primitives/
   dashboard/                 → src/interface/dashboard/
-  themed-text.tsx            → src/interface/themed-text.tsx
   ...
 
-src/store/                   → src/features/auth/store/
+src/store/                   → src/features/*/
   auth-store.ts              → src/features/auth/auth-store.ts
   font-store.ts              → src/features/theme/font-store.ts
 
@@ -420,7 +419,7 @@ New-Item -ItemType Directory -Force -Path "src/features/auth/store"
 New-Item -ItemType Directory -Force -Path "src/features/theme"
 New-Item -ItemType Directory -Force -Path "src/features/dashboard"
 
-# Move auth store
+# Move stores
 Move-Item -Path "src/store/auth-store.ts" -Destination "src/features/auth/auth-store.ts"
 Move-Item -Path "src/store/font-store.ts" -Destination "src/features/theme/font-store.ts"
 
@@ -548,7 +547,7 @@ import { Checkbox } from 'tamagui';
 
 #### Example: Button Component Migration
 
-**Before:** `src/components/ui/button.tsx` (52 lines)
+**Before:** Legacy button wrapper (deleted)
 
 ```tsx
 import { Text, Pressable } from 'react-native';
@@ -572,54 +571,17 @@ const buttonVariants = cva('flex flex-row items-center justify-center rounded-md
 });
 ```
 
-**After:** `src/interface/primitives/button.tsx` (28 lines)
+**After:** Use Tamagui `Button` directly via `@/interface/primitives`
 
 ```tsx
-import { Button as TamaguiButton, type ButtonProps } from 'tamagui';
-import { forwardRef } from 'react';
+import { Button, Text } from '@/interface/primitives';
 
-type Variant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
-type Size = 'default' | 'sm' | 'lg' | 'icon';
-
-interface CustomButtonProps extends Omit<ButtonProps, 'variant' | 'size'> {
-  variant?: Variant;
-  size?: Size;
-}
-
-const Button = forwardRef<typeof TamaguiButton, CustomButtonProps>(
-  ({ variant = 'default', size = 'default', ...props }, ref) => {
-    const variantStyles = {
-      default: { backgroundColor: '$primary', color: '$primaryForeground' },
-      destructive: { backgroundColor: '$destructive', color: '$destructiveForeground' },
-      outline: { borderWidth: 1, borderColor: '$input', backgroundColor: '$background' },
-      secondary: { backgroundColor: '$secondary', color: '$secondaryForeground' },
-      ghost: { backgroundColor: 'transparent' },
-      link: { backgroundColor: 'transparent', textDecorationLine: 'underline' },
-    };
-
-    const sizeStyles = {
-      default: { height: 40, paddingHorizontal: 16, paddingVertical: 8 },
-      sm: { height: 36, paddingHorizontal: 12, borderRadius: 6 },
-      lg: { height: 44, paddingHorizontal: 32, borderRadius: 6 },
-      icon: { height: 40, width: 40 },
-    };
-
-    return (
-      <TamaguiButton
-        ref={ref}
-        {...variantStyles[variant]}
-        {...sizeStyles[size]}
-        borderRadius={6}
-        {...props}
-      />
-    );
-  }
-);
-
-export { Button };
+<Button variant="outlined">
+  <Text>Save</Text>
+</Button>;
 ```
 
-**Savings:** -24 lines, no CVA dependency, better performance
+**Savings:** Removes a compatibility wrapper; uses official Tamagui API
 
 ---
 
@@ -657,8 +619,8 @@ export { Button };
 
 **Shared Components (8 files):**
 
-1. `themed-text.tsx` → Wrap Tamagui Text
-2. `themed-view.tsx` → Wrap Tamagui Stack
+1. Typography → Use `Paragraph` / `SizableText` directly
+2. Layout → Use `View` / `XStack` / `YStack` directly
 3. `parallax-scroll-view.tsx` → Use ScrollView
 4. `hello-wave.tsx` → Animated component
 5. `haptic-tab.tsx` → Tab with haptics
@@ -697,9 +659,9 @@ export { Button };
 // OLD PATHS → NEW PATHS
 
 // Components
-'@/components/ui/' → '@/interface/primitives/'
+'@/interface/primitives' (UI primitives import surface)
 '@/components/dashboard/' → '@/features/dashboard/components/'
-'@/components/themed-text' → '@/interface/themed-text'
+// No themed wrapper imports: use `@/interface/primitives`
 
 // Services
 '@/services/supabase' → '@/server/supabase'
@@ -951,11 +913,9 @@ src/interface/
 │   ├── input.tsx
 │   ├── card.tsx
 │   └── ...
-│
-└── themed/                           # Theme-aware wrappers
-    ├── themed-stack.tsx              # Stack with theme context
-    ├── themed-text.tsx               # Text with theme variants
-    └── themed-view.tsx               # View with theme support
+
+// Theme-aware UI should be composed directly from primitives (no wrapper layer).
+// Prefer importing from `@/interface/primitives`.
 ```
 
 ---

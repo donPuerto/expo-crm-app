@@ -1,6 +1,5 @@
 import React from 'react';
-import { YStack, XStack, Label, Switch, Text } from '@/interface/primitives';
-import type { GetProps } from 'tamagui';
+import { YStack, XStack, Label, Switch, Text, type GetProps } from '@/interface/primitives';
 
 export interface SwitchFieldProps {
   id: string;

@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
-import { StyleSheet, Text as RNText } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -8,8 +8,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { GradientBackground } from '@/components/ui/gradient-background';
-import { AppLogo } from '@/components/ui/app-logo';
+import { LinearGradient, Text, View } from '@/interface/primitives';
 import { addOpacityToHex } from '@/lib/utils';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useFont } from '@/hooks/use-font';
@@ -81,24 +80,36 @@ export default function SplashScreen() {
   ];
 
   return (
-    <GradientBackground
+    <LinearGradient
       colors={gradientColors}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
       <AnimatedElement index={0}>
-        <AppLogo size={96} iconSize={48} style={styles.logo} />
+        <View
+          style={styles.logo}
+          width={96}
+          height={96}
+          borderRadius={48}
+          backgroundColor="$blue10"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Text color="white" fontSize={24} fontWeight="800">
+            CRM
+          </Text>
+        </View>
       </AnimatedElement>
 
       <AnimatedElement index={1}>
-        <RNText style={dynamicStyles.appName}>Application</RNText>
+        <Text style={dynamicStyles.appName}>Application</Text>
       </AnimatedElement>
 
       <AnimatedElement index={2}>
-        <RNText style={dynamicStyles.tagline}>Your Intelligent Business{'\n'}CRM Solutions</RNText>
+        <Text style={dynamicStyles.tagline}>Your Intelligent Business{'\n'}CRM Solutions</Text>
       </AnimatedElement>
-    </GradientBackground>
+    </LinearGradient>
   );
 }
 

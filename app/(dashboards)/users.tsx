@@ -10,8 +10,7 @@ import {
   StatCard,
   type ActivityItem,
 } from '@/components/dashboard';
-import { ThemedText } from '@/interface/components/themed-text';
-import { ThemedView } from '@/interface/components/themed-view';
+import { Paragraph } from '@/interface/primitives';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { createShadowStyle } from '@/lib/shadow-styles';
 import { usersDashboard } from '@/features/dashboard/definitions';
@@ -22,7 +21,7 @@ export default function UsersDashboard() {
   const tint = useThemeColor({}, 'tint');
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <DashboardHeader
         title={title}
         subtitle={subtitle}
@@ -41,7 +40,7 @@ export default function UsersDashboard() {
             ]}
             onPress={() => router.push('/(crm)/users' as never)}
           >
-            <ThemedText style={styles.manageButtonText}>Manage Users</ThemedText>
+            <Paragraph style={styles.manageButtonText}>Manage Users</Paragraph>
           </Pressable>
         }
       />
@@ -77,7 +76,7 @@ export default function UsersDashboard() {
           })}
         </DashboardGrid>
       </ScrollView>
-    </ThemedView>
+    </View>
   );
 }
 

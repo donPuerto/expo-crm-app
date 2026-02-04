@@ -157,17 +157,17 @@ src/
 ├── tamagui/
 │   ├── animations.ts (web - Motion driver)
 │   └── animations.native.ts (native - Reanimated driver)
-└── interface/
-    ├── components/
-    │   ├── page-transition.tsx
-    │   ├── directional-page-transition.tsx
-    │   ├── carousel-transition.tsx
-    │   ├── image-gallery.tsx
-    │   ├── animated-modal.tsx
-    │   └── page-transition-examples.tsx
-    ├── hooks/
-    │   └── use-route-transition.ts
-    └── transitions.ts (barrel export)
+├── interface/
+│   ├── components/
+│   │   ├── page-transition.tsx
+│   │   ├── directional-page-transition.tsx
+│   │   ├── carousel-transition.tsx
+│   │   ├── image-gallery.tsx
+│   │   ├── animated-modal.tsx
+│   │   └── page-transition-examples.tsx
+│   └── transitions.ts (barrel export)
+└── hooks/
+  └── use-route-transition.ts
 ```
 
 ## 🎓 Learning Path

@@ -35,6 +35,7 @@ export {
 
   // Form Components
   Button,
+  Input,
   TextArea,
   Label,
   Checkbox,

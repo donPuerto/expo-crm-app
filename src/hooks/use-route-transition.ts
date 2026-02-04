@@ -14,45 +14,51 @@
  * ```
  */
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname } from 'expo-router';
 
 export type TransitionDirection = 'forward' | 'backward' | 'none';
 
-interface RouteTransitionState {
+type RouteTransitionState = {
   direction: TransitionDirection;
   setDirection: (direction: TransitionDirection) => void;
+};
+
+let routeHistory: string[] = [];
+
+function computeDirection(nextPathname: string): TransitionDirection {
+  if (routeHistory.length === 0) {
+    routeHistory = [nextPathname];
+    return 'none';
+  }
+
+  const current = routeHistory[routeHistory.length - 1];
+  if (current === nextPathname) {
+    return 'none';
+  }
+
+  const previousIndex = routeHistory.indexOf(nextPathname);
+  if (previousIndex !== -1 && previousIndex < routeHistory.length - 1) {
+    routeHistory = routeHistory.slice(0, previousIndex + 1);
+    return 'backward';
+  }
+
+  routeHistory = [...routeHistory, nextPathname];
+  return 'forward';
 }
 
 /**
- * Hook to track navigation direction for animated transitions
+ * Hook to track navigation direction for animated transitions.
  *
  * Automatically detects forward/backward navigation based on route changes.
  * Can be manually controlled using setDirection.
  */
 export function useRouteTransition(): RouteTransitionState {
   const pathname = usePathname();
-  const [direction, setDirection] = useState<TransitionDirection>('none');
-  const [, setHistory] = useState<string[]>([pathname]);
+  const [direction, setDirection] = useState<TransitionDirection>(() => computeDirection(pathname));
 
   useEffect(() => {
-    setHistory(prev => {
-      // If current path is same as last, no change
-      if (prev[prev.length - 1] === pathname) {
-        return prev;
-      }
-
-      // Check if going back
-      const previousIndex = prev.indexOf(pathname);
-      if (previousIndex !== -1 && previousIndex < prev.length - 1) {
-        setDirection('backward');
-        return prev.slice(0, previousIndex + 1);
-      }
-
-      // Going forward
-      setDirection('forward');
-      return [...prev, pathname];
-    });
+    setDirection(computeDirection(pathname));
   }, [pathname]);
 
   return { direction, setDirection };
@@ -63,7 +69,7 @@ export function useRouteTransition(): RouteTransitionState {
  *
  * ```tsx
  * import { DirectionalPageTransition } from '@/interface/components/directional-page-transition'
- * import { useRouteTransition } from '@/interface/hooks/use-route-transition'
+ * import { useRouteTransition } from '@/hooks/use-route-transition'
  *
  * export default function MyScreen() {
  *   const { direction } = useRouteTransition()

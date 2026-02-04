@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from 'react';
-import { YStack, XStack, Text, ScrollView, useTheme } from 'tamagui';
+import { YStack, XStack, Text, ScrollView, useTheme } from '@/interface/primitives';
 import { Briefcase, Users, Settings, User, Inbox } from '@/interface/primitives';
 import { usePathname, useRouter } from 'expo-router';
 import { Pressable } from 'react-native';

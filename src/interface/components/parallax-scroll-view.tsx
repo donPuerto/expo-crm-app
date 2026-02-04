@@ -1,5 +1,5 @@
 import type { PropsWithChildren, ReactElement } from 'react';
-import { YStack } from 'tamagui';
+import { YStack } from '@/interface/primitives';
 import Animated, {
   interpolate,
   useAnimatedRef,

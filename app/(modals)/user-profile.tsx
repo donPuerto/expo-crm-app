@@ -1,8 +1,19 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert } from 'react-native';
-import { YStack, XStack, H1, H2, Text, Button, ScrollView } from 'tamagui';
-import { Input, Avatar, getInitials, Label } from '@/interface/primitives';
+import {
+  YStack,
+  XStack,
+  H1,
+  H2,
+  Text,
+  Button,
+  ScrollView,
+  Input,
+  Avatar,
+  getInitials,
+  Label,
+} from '@/interface/primitives';
 
 export default function UserProfile() {
   const router = useRouter();

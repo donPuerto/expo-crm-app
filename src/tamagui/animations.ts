@@ -46,26 +46,12 @@ export const animations = createAnimations({
   },
 
   // Timing animations (Motion duration-based)
-  '100ms': {
-    type: 'spring',
-    duration: 100,
-  },
-  '200ms': {
-    type: 'spring',
-    duration: 200,
-  },
-  '300ms': {
-    type: 'spring',
-    duration: 300,
-  },
-  '400ms': {
-    type: 'spring',
-    duration: 400,
-  },
-  '500ms': {
-    type: 'spring',
-    duration: 500,
-  },
+  // Per Tamagui docs, Motion timing configs can be expressed as { duration }
+  '100ms': { duration: 100 },
+  '200ms': { duration: 200 },
+  '300ms': { duration: 300 },
+  '400ms': { duration: 400 },
+  '500ms': { duration: 500 },
 });
 
 export const cssAnimations = createCSS({

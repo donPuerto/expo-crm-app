@@ -1,4 +1,4 @@
-import { YStack, XStack, useMedia } from 'tamagui';
+import { YStack, XStack, useMedia } from '@/interface/primitives';
 
 import Sidebar from './sidebar';
 import Topbar from './topbar';

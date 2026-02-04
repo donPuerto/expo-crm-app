@@ -1,17 +1,20 @@
 import { Link } from 'expo-router';
 import { StyleSheet } from 'react-native';
 
-import { ThemedText } from '@/interface/components/themed-text';
-import { ThemedView } from '@/interface/components/themed-view';
+import { Paragraph, SizableText, View } from '@/interface/primitives';
 
 export default function ModalScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">This is a modal</ThemedText>
+    <View style={styles.container}>
+      <SizableText size="$8" fontWeight="800">
+        This is a modal
+      </SizableText>
       <Link href="/" dismissTo style={styles.link}>
-        <ThemedText type="link">Go to home screen</ThemedText>
+        <Paragraph color="$primary" textDecorationLine="underline">
+          Go to home screen
+        </Paragraph>
       </Link>
-    </ThemedView>
+    </View>
   );
 }
 

@@ -28,10 +28,11 @@
 **Files Migrated:**
 
 1. **app/(crm)/users/add.tsx** (257 → 170 lines, **-34%**)
-   - Removed: ThemedText, ThemedView, useThemeColor (5 calls), StyleSheet (14 rules), createShadowStyle
-   - Added: YStack, H1, Text, Input, Button, ScrollView from Tamagui
-   - Preserved: AnimatedInput component with Reanimated staggered entrance animations
-   - Pattern: Custom wrapper for animation, direct Input usage
+
+- Removed: legacy wrapper components, useThemeColor (5 calls), StyleSheet (14 rules), createShadowStyle
+- Added: YStack, H1, Text, Input, Button, ScrollView from Tamagui
+- Preserved: AnimatedInput component with Reanimated staggered entrance animations
+- Pattern: Custom wrapper for animation, direct Input usage
 
 2. **app/(crm)/contacts/add.tsx** (104 → 88 lines, **-15%**)
    - Removed: View, Text, TextInput, Pressable, StyleSheet (7 rules), hardcoded colors
@@ -101,7 +102,7 @@
 
 **Removed:**
 
-- ThemedText, ThemedView (18 instances)
+- Legacy wrapper components (18 instances)
 - useThemeColor hook (8 color computations)
 - createShadowStyle (3 calls)
 - StyleSheet (40+ style rules)

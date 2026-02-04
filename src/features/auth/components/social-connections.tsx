@@ -1,5 +1,5 @@
 import { Apple, Chrome, Github } from '@tamagui/lucide-icons';
-import { XStack, Button } from 'tamagui';
+import { XStack, Button } from '@/interface/primitives';
 
 const SOCIAL_CONNECTIONS = [
   { id: 'apple', icon: Apple },

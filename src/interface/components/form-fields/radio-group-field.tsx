@@ -1,6 +1,5 @@
 import React from 'react';
-import { YStack, XStack, Label, RadioGroup, Text } from '@/interface/primitives';
-import type { GetProps } from 'tamagui';
+import { YStack, XStack, Label, RadioGroup, Text, type GetProps } from '@/interface/primitives';
 
 export interface RadioOption {
   label: string;

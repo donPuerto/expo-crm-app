@@ -1,8 +1,7 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert } from 'react-native';
-import { YStack, H1, Text, Button, ScrollView } from 'tamagui';
-import { Input } from '@/interface/primitives/input.tamagui';
+import { YStack, H1, Text, Button, ScrollView, Input } from '@/interface/primitives';
 import {
   SelectField,
   CheckboxField,

@@ -10,8 +10,8 @@
  * - Mobile-friendly interactions
  */
 
-export * from './checkbox-field.tamagui';
-export * from './switch-field.tamagui';
-export * from './select-field.tamagui';
-export * from './radio-group-field.tamagui';
-export * from './validation';
+export * from './checkbox-field';
+export * from './switch-field';
+export * from './select-field';
+export * from './radio-group-field';
+export * from './form-validation';

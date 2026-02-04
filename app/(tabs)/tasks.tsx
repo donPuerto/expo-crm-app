@@ -1,8 +1,7 @@
 import React from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/interface/components/themed-text';
-import { ThemedView } from '@/interface/components/themed-view';
+import { Paragraph, SizableText } from '@/interface/primitives';
 
 type Task = {
   id: string;
@@ -27,10 +26,10 @@ export default function TasksScreen() {
   );
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.header}>
+    <View style={styles.container}>
+      <SizableText size="$8" fontWeight="800" style={styles.header}>
         Tasks
-      </ThemedText>
+      </SizableText>
 
       <View style={styles.filters}>
         {['today', 'upcoming', 'overdue', 'all'].map(value => (
@@ -39,17 +38,17 @@ export default function TasksScreen() {
             onPress={() => setFilter(value as Task['status'] | 'all')}
             style={[styles.chip, filter === value && styles.chipActive]}
           >
-            <ThemedText style={filter === value ? styles.chipLabelActive : styles.chipLabel}>
+            <Paragraph style={filter === value ? styles.chipLabelActive : styles.chipLabel}>
               {value === 'all' ? 'All' : value.charAt(0).toUpperCase() + value.slice(1)}
-            </ThemedText>
+            </Paragraph>
           </Pressable>
         ))}
       </View>
 
       <Pressable style={styles.addButton}>
-        <ThemedText type="defaultSemiBold" style={styles.addButtonText}>
+        <Paragraph fontWeight="700" style={styles.addButtonText}>
           + Add Task
-        </ThemedText>
+        </Paragraph>
       </Pressable>
 
       <FlatList
@@ -58,12 +57,12 @@ export default function TasksScreen() {
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
           <Pressable style={styles.card}>
-            <ThemedText type="defaultSemiBold">{item.title}</ThemedText>
-            <ThemedText style={styles.meta}>{item.due}</ThemedText>
+            <Paragraph fontWeight="700">{item.title}</Paragraph>
+            <Paragraph style={styles.meta}>{item.due}</Paragraph>
           </Pressable>
         )}
       />
-    </ThemedView>
+    </View>
   );
 }
 

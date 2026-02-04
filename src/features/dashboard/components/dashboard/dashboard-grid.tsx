@@ -1,5 +1,5 @@
 import React from 'react';
-import { XStack, YStack, useMedia } from 'tamagui';
+import { XStack, YStack, useMedia } from '@/interface/primitives';
 
 interface DashboardGridProps {
   children: React.ReactNode;

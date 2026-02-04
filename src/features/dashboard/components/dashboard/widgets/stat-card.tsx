@@ -6,7 +6,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { YStack, Text } from 'tamagui';
+import { YStack, Text } from '@/interface/primitives';
 
 interface StatCardProps {
   label: string;

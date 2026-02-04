@@ -11,11 +11,11 @@ Added reusable form-field wrappers to keep labels, required indicators, error st
 
 **New Files**:
 
-- `src/interface/components/form-fields/checkbox-field.tamagui.tsx`
-- `src/interface/components/form-fields/switch-field.tamagui.tsx`
-- `src/interface/components/form-fields/select-field.tamagui.tsx` (includes mobile `Adapt` → `Sheet` behavior)
-- `src/interface/components/form-fields/radio-group-field.tamagui.tsx`
-- `src/interface/components/form-fields/validation.ts` (shared validators + helpers)
+- `src/interface/components/form-fields/checkbox-field.tsx`
+- `src/interface/components/form-fields/switch-field.tsx`
+- `src/interface/components/form-fields/select-field.tsx` (includes mobile `Adapt` → `Sheet` behavior)
+- `src/interface/components/form-fields/radio-group-field.tsx`
+- `src/lib/form-validation.ts` (shared validators + helpers; re-exported by `src/interface/components/form-fields/form-validation.ts`)
 
 **Forms Updated**:
 
@@ -80,19 +80,14 @@ export * from './textarea.tamagui';
 **After**:
 
 ```tsx
-// Custom components (keep these)
-export * from './input.tamagui';
-
 // Official Tamagui components (re-exported for convenience)
-export * from './tamagui-components';
+export * from './tamagui-components.tamagui';
 ```
 
 **Benefits**:
 
 - Simpler imports: `import { Button, Avatar, Label } from '@/interface/primitives'`
 - All official components accessible from one location
-- Custom Input component preserved
-- Easy to add new components
 
 ---
 

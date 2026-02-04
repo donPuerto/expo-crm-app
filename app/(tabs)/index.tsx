@@ -13,6 +13,15 @@ import {
   Dimensions,
 } from 'react-native';
 import {
+  Button,
+  Card,
+  LinearGradient,
+  Separator,
+  SizableText,
+  Text,
+  YStack,
+  Avatar,
+  getInitials,
   Plus,
   X as XIcon,
   Check,
@@ -23,18 +32,21 @@ import {
   Settings,
   Menu as MenuIcon,
 } from '@/interface/primitives';
-
-import { Text } from '@/components/ui/text';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { GradientBackground } from '@/components/ui/gradient-background';
-import { Avatar } from '@/components/ui/avatar';
-import { Label } from '@/components/ui/label';
-import { Icon } from '@/components/ui/icon';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useFont } from '@/hooks/use-font';
 import { addOpacityToHex } from '@/lib/utils';
+
+function InitialsAvatar({ fallback, size }: { fallback: string; size: number }) {
+  return (
+    <Avatar circular size={size}>
+      <Avatar.Fallback backgroundColor="$gray6" alignItems="center" justifyContent="center">
+        <Text color="white" fontWeight="700">
+          {getInitials(fallback)}
+        </Text>
+      </Avatar.Fallback>
+    </Avatar>
+  );
+}
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DRAWER_WIDTH = SCREEN_WIDTH * 0.75;
@@ -124,11 +136,11 @@ export default function HomeScreen() {
             {/* Company Header */}
             <View style={[styles.companyHeader, { borderBottomColor: borderColor }]}>
               <View style={styles.companyInfo}>
-                <Avatar fallback="Acme Inc." size={32} />
-                <Label style={[styles.companyName, { color: textColor }]}>Acme Inc.</Label>
+                <InitialsAvatar fallback="Acme Inc." size={32} />
+                <Text style={[styles.companyName, { color: textColor }]}>Acme Inc.</Text>
               </View>
               <Pressable onPress={closeDrawer} style={styles.closeIconButton}>
-                <Icon as={XIcon} size={20} color={mutedColor} />
+                <XIcon size={20} color={mutedColor} />
               </Pressable>
             </View>
 
@@ -141,8 +153,8 @@ export default function HomeScreen() {
                 ]}
                 onPress={() => console.log('Quick create')}
               >
-                <Icon as={Plus} size={18} color="#ffffff" />
-                <Label style={styles.quickCreateLabel}>Quick Create</Label>
+                <Plus size={18} color="#ffffff" />
+                <Text style={styles.quickCreateLabel}>Quick Create</Text>
               </Pressable>
             </View>
 
@@ -150,7 +162,7 @@ export default function HomeScreen() {
             <ScrollView style={styles.drawerContent} showsVerticalScrollIndicator={false}>
               {/* Dashboard Section */}
               <View style={styles.menuSection}>
-                <Label style={[styles.sectionHeader, { color: mutedColor }]}>Dashboard</Label>
+                <Text style={[styles.sectionHeader, { color: mutedColor }]}>Dashboard</Text>
 
                 <Pressable
                   style={({ pressed }) => [
@@ -163,8 +175,8 @@ export default function HomeScreen() {
                   ]}
                   onPress={closeDrawer}
                 >
-                  <Icon as={HomeIcon} size={20} color={textColor} />
-                  <Label style={[styles.menuLabel, { color: textColor }]}>Leads</Label>
+                  <HomeIcon size={20} color={textColor} />
+                  <Text style={[styles.menuLabel, { color: textColor }]}>Leads</Text>
                 </Pressable>
 
                 <Pressable
@@ -176,8 +188,8 @@ export default function HomeScreen() {
                   ]}
                   onPress={closeDrawer}
                 >
-                  <Icon as={Users} size={20} color={textColor} />
-                  <Label style={[styles.menuLabel, { color: textColor }]}>Contacts</Label>
+                  <Users size={20} color={textColor} />
+                  <Text style={[styles.menuLabel, { color: textColor }]}>Contacts</Text>
                 </Pressable>
 
                 <Pressable
@@ -189,8 +201,8 @@ export default function HomeScreen() {
                   ]}
                   onPress={closeDrawer}
                 >
-                  <Icon as={HomeIcon} size={20} color={textColor} />
-                  <Label style={[styles.menuLabel, { color: textColor }]}>Opportunity</Label>
+                  <HomeIcon size={20} color={textColor} />
+                  <Text style={[styles.menuLabel, { color: textColor }]}>Opportunity</Text>
                 </Pressable>
 
                 <Pressable
@@ -202,8 +214,8 @@ export default function HomeScreen() {
                   ]}
                   onPress={closeDrawer}
                 >
-                  <Icon as={Check} size={20} color={textColor} />
-                  <Label style={[styles.menuLabel, { color: textColor }]}>Tasks</Label>
+                  <Check size={20} color={textColor} />
+                  <Text style={[styles.menuLabel, { color: textColor }]}>Tasks</Text>
                 </Pressable>
               </View>
             </ScrollView>
@@ -219,8 +231,8 @@ export default function HomeScreen() {
                 ]}
                 onPress={closeDrawer}
               >
-                <Icon as={Settings} size={20} color={textColor} />
-                <Label style={[styles.menuLabel, { color: textColor }]}>Settings</Label>
+                <Settings size={20} color={textColor} />
+                <Text style={[styles.menuLabel, { color: textColor }]}>Settings</Text>
               </Pressable>
 
               <Pressable
@@ -232,8 +244,12 @@ export default function HomeScreen() {
                 ]}
                 onPress={handleThemeToggle}
               >
-                <Icon as={isDark ? Sun : Moon} size={20} color={textColor} />
-                <Label style={[styles.menuLabel, { color: textColor }]}>Dark Mode</Label>
+                {isDark ? (
+                  <Sun size={20} color={textColor} />
+                ) : (
+                  <Moon size={20} color={textColor} />
+                )}
+                <Text style={[styles.menuLabel, { color: textColor }]}>Dark Mode</Text>
               </Pressable>
             </View>
 
@@ -252,16 +268,20 @@ export default function HomeScreen() {
               }}
             >
               <View style={styles.userAvatarContainer}>
-                <Avatar fallback="shadcn" size={36} />
+                <InitialsAvatar fallback="shadcn" size={36} />
               </View>
               <View style={styles.drawerUserInfo}>
-                <Label style={[styles.drawerUserName, { color: textColor }]}>shadcn</Label>
-                <Text variant="small" style={[styles.drawerUserEmail, { color: mutedColor }]}>
+                <Text style={[styles.drawerUserName, { color: textColor }]}>shadcn</Text>
+                <Text
+                  fontSize="$2"
+                  opacity={0.8}
+                  style={[styles.drawerUserEmail, { color: mutedColor }]}
+                >
                   m@example.com
                 </Text>
               </View>
               <View style={styles.userSettingsIconContainer}>
-                <Icon as={Settings} size={16} color={mutedColor} />
+                <Settings size={16} color={mutedColor} />
               </View>
             </Pressable>
           </Animated.View>
@@ -269,7 +289,7 @@ export default function HomeScreen() {
       </Modal>
 
       {/* Header with gradient */}
-      <GradientBackground
+      <LinearGradient
         colors={[primaryColor, addOpacityToHex(primaryColor, 0.9), primaryColor]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -280,9 +300,13 @@ export default function HomeScreen() {
             <Pressable onPress={() => setMenuOpen(!menuOpen)} style={styles.menuButton}>
               <MenuIcon size={24} color="#ffffff" />
             </Pressable>
-            <Text variant="h3" style={[styles.headerTitle, { fontFamily, color: '#ffffff' }]}>
+            <SizableText
+              size="$7"
+              fontWeight="700"
+              style={[styles.headerTitle, { fontFamily, color: '#ffffff' }]}
+            >
               Home
-            </Text>
+            </SizableText>
             <Pressable onPress={handleThemeToggle} style={styles.themeButton}>
               {isDark ? <Sun size={24} color="#ffffff" /> : <Moon size={24} color="#ffffff" />}
             </Pressable>
@@ -329,7 +353,7 @@ export default function HomeScreen() {
             </View>
           </View>
         </View>
-      </GradientBackground>
+      </LinearGradient>
 
       {/* Content */}
       <ScrollView
@@ -347,9 +371,13 @@ export default function HomeScreen() {
       >
         {/* New Activity Section */}
         <View style={styles.section}>
-          <Text variant="h4" style={[styles.sectionTitle, { fontFamily, color: textColor }]}>
+          <SizableText
+            size="$6"
+            fontWeight="700"
+            style={[styles.sectionTitle, { fontFamily, color: textColor }]}
+          >
             New activity for today
-          </Text>
+          </SizableText>
           <View style={styles.activityButtons}>
             <Button
               style={styles.activityButton}
@@ -359,9 +387,7 @@ export default function HomeScreen() {
             >
               <View style={styles.activityButtonContent}>
                 <Plus size={20} color="#ffffff" />
-                <Text variant="default" style={styles.activityButtonText}>
-                  Meeting
-                </Text>
+                <Text style={styles.activityButtonText}>Meeting</Text>
               </View>
             </Button>
             <Button
@@ -372,9 +398,7 @@ export default function HomeScreen() {
             >
               <View style={styles.activityButtonContent}>
                 <Plus size={20} color="#ffffff" />
-                <Text variant="default" style={styles.activityButtonText}>
-                  Task
-                </Text>
+                <Text style={styles.activityButtonText}>Task</Text>
               </View>
             </Button>
             <Button
@@ -385,9 +409,7 @@ export default function HomeScreen() {
             >
               <View style={styles.activityButtonContent}>
                 <Plus size={20} color="#ffffff" />
-                <Text variant="default" style={styles.activityButtonText}>
-                  Call
-                </Text>
+                <Text style={styles.activityButtonText}>Call</Text>
               </View>
             </Button>
           </View>
@@ -395,13 +417,25 @@ export default function HomeScreen() {
 
         {/* Upcoming Tasks */}
         <View style={styles.section}>
-          <Text variant="h4" style={[styles.sectionTitle, { fontFamily, color: textColor }]}>
+          <SizableText
+            size="$6"
+            fontWeight="700"
+            style={[styles.sectionTitle, { fontFamily, color: textColor }]}
+          >
             Upcoming tasks
-          </Text>
+          </SizableText>
           <View style={styles.tasksList}>
             {UPCOMING_TASKS.map(task => (
-              <Card key={task.id} style={styles.taskCard}>
-                <CardContent style={styles.taskCardContent}>
+              <Card
+                key={task.id}
+                padding={0}
+                borderRadius="$4"
+                borderWidth={1}
+                borderColor="$borderColor"
+                backgroundColor="$card"
+                style={styles.taskCard}
+              >
+                <YStack style={styles.taskCardContent}>
                   <View style={styles.taskLeft}>
                     <View
                       style={[
@@ -421,22 +455,21 @@ export default function HomeScreen() {
                       )}
                     </View>
                     <View style={styles.taskInfo}>
-                      <Text
-                        variant="default"
-                        style={[styles.taskTitle, { fontFamily, color: textColor }]}
-                      >
+                      <Text style={[styles.taskTitle, { fontFamily, color: textColor }]}>
                         {task.title}
                       </Text>
                       <View style={styles.taskMeta}>
                         <Text
-                          variant="small"
+                          fontSize="$2"
+                          opacity={0.8}
                           style={[styles.taskType, { fontFamily, color: mutedColor }]}
                         >
                           {task.type}
                         </Text>
-                        <Separator orientation="vertical" style={styles.separator} />
+                        <Separator vertical style={styles.separator} />
                         <Text
-                          variant="small"
+                          fontSize="$2"
+                          opacity={0.8}
                           style={[
                             styles.taskStatus,
                             {
@@ -451,12 +484,13 @@ export default function HomeScreen() {
                     </View>
                   </View>
                   <Text
-                    variant="small"
+                    fontSize="$2"
+                    opacity={0.8}
                     style={[styles.taskTime, { fontFamily, color: mutedColor }]}
                   >
                     {task.time}
                   </Text>
-                </CardContent>
+                </YStack>
               </Card>
             ))}
           </View>

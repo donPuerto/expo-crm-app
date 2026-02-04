@@ -8,8 +8,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { YStack, Text, H1, ScrollView, Button } from 'tamagui';
-import { Input } from '@/interface/primitives/input.tamagui';
+import { YStack, Text, H1, ScrollView, Button, Input } from '@/interface/primitives';
 import {
   SelectField,
   SwitchField,

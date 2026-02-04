@@ -9,8 +9,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { ThemedText } from '@/interface/components/themed-text';
-import { ThemedView } from '@/interface/components/themed-view';
+import { Paragraph, SizableText } from '@/interface/primitives';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { createShadowStyle } from '@/lib/shadow-styles';
 
@@ -146,10 +145,10 @@ function AnimatedUserCard({
       >
         <View style={styles.cardHeader}>
           <View style={styles.cardHeaderLeft}>
-            <ThemedText type="defaultSemiBold" style={styles.cardTitle}>
+            <Paragraph fontWeight="700" style={styles.cardTitle}>
               {user.name}
-            </ThemedText>
-            <ThemedText style={styles.cardEmail}>{user.email}</ThemedText>
+            </Paragraph>
+            <Paragraph style={styles.cardEmail}>{user.email}</Paragraph>
           </View>
           <View
             style={[
@@ -161,26 +160,26 @@ function AnimatedUserCard({
             ]}
           >
             <View style={[styles.statusDot, { backgroundColor: getStatusColor(user.status) }]} />
-            <ThemedText style={[styles.statusText, { color: getStatusColor(user.status) }]}>
+            <Paragraph style={[styles.statusText, { color: getStatusColor(user.status) }]}>
               {user.status}
-            </ThemedText>
+            </Paragraph>
           </View>
         </View>
         <View style={styles.cardDetails}>
           <View style={styles.detailRow}>
-            <ThemedText style={styles.detailLabel}>Role:</ThemedText>
-            <ThemedText style={styles.detailValue}>{user.role}</ThemedText>
+            <Paragraph style={styles.detailLabel}>Role:</Paragraph>
+            <Paragraph style={styles.detailValue}>{user.role}</Paragraph>
           </View>
           {user.department && (
             <View style={styles.detailRow}>
-              <ThemedText style={styles.detailLabel}>Department:</ThemedText>
-              <ThemedText style={styles.detailValue}>{user.department}</ThemedText>
+              <Paragraph style={styles.detailLabel}>Department:</Paragraph>
+              <Paragraph style={styles.detailValue}>{user.department}</Paragraph>
             </View>
           )}
           {user.phone && (
             <View style={styles.detailRow}>
-              <ThemedText style={styles.detailLabel}>Phone:</ThemedText>
-              <ThemedText style={[styles.detailValue, { color: tint }]}>{user.phone}</ThemedText>
+              <Paragraph style={styles.detailLabel}>Phone:</Paragraph>
+              <Paragraph style={[styles.detailValue, { color: tint }]}>{user.phone}</Paragraph>
             </View>
           )}
         </View>
@@ -198,7 +197,7 @@ export default function UsersListScreen() {
   const textColor = useThemeColor({}, 'text');
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor }]}>
+    <View style={[styles.container, { backgroundColor }]}>
       <View
         style={[
           styles.header,
@@ -212,9 +211,9 @@ export default function UsersListScreen() {
           }),
         ]}
       >
-        <ThemedText type="title" style={[styles.title, { color: textColor }]}>
+        <SizableText size="$8" fontWeight="800" style={[styles.title, { color: textColor }]}>
           Users
-        </ThemedText>
+        </SizableText>
         <Pressable
           style={[
             styles.addBtn,
@@ -231,7 +230,7 @@ export default function UsersListScreen() {
             router.push('/(crm)/users/add' as never);
           }}
         >
-          <ThemedText style={styles.addBtnText}>+ Add User</ThemedText>
+          <Paragraph style={styles.addBtnText}>+ Add User</Paragraph>
         </Pressable>
       </View>
       <FlatList
@@ -252,7 +251,7 @@ export default function UsersListScreen() {
         )}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
-    </ThemedView>
+    </View>
   );
 }
 

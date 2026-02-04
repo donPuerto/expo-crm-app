@@ -1,7 +1,16 @@
 import React from 'react';
-import { YStack, Label, Select, Text, Adapt, Sheet } from '@/interface/primitives';
-import { Check, ChevronDown, ChevronUp } from '@tamagui/lucide-icons';
-import type { GetProps } from 'tamagui';
+import {
+  YStack,
+  Label,
+  Select,
+  Text,
+  Adapt,
+  Sheet,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  type GetProps,
+} from '@/interface/primitives';
 
 export interface SelectOption {
   label: string;
@@ -77,7 +86,11 @@ export function SelectField({
         size={size}
         disablePreventBodyScroll
       >
-        <Select.Trigger iconAfter={ChevronDown} borderColor={error ? '$red10' : '$borderColor'}>
+        <Select.Trigger
+          iconAfter={ChevronDown}
+          borderColor={error ? '$red10' : '$borderColor'}
+          disabled={disabled}
+        >
           <Select.Value placeholder={placeholder} />
         </Select.Trigger>
 

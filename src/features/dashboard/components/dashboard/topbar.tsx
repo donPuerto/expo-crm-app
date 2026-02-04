@@ -1,4 +1,4 @@
-﻿import { XStack, Text } from 'tamagui';
+﻿import { XStack, Text } from '@/interface/primitives';
 
 export default function Topbar() {
   return (

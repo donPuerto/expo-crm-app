@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { YStack, XStack, Text } from 'tamagui';
+import { YStack, XStack, Text } from '@/interface/primitives';
 
 export interface ActivityItem {
   id: string;

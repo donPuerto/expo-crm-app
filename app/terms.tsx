@@ -8,10 +8,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
-import { ThemedText } from '@/interface/components/themed-text';
-import { ThemedView } from '@/interface/components/themed-view';
+import { Button, Paragraph, SizableText, Text } from '@/interface/primitives';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 function AnimatedContent({ children, index }: { children: React.ReactNode; index: number }) {
@@ -47,101 +44,101 @@ export default function TermsScreen() {
   const mutedColor = useThemeColor({}, 'text');
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor }]} accessibilityViewIsModal>
+    <View style={[styles.container, { backgroundColor }]} accessibilityViewIsModal>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <AnimatedContent index={0}>
-          <ThemedText type="title" style={[styles.title, { color: textColor }]}>
+          <SizableText size="$8" fontWeight="800" style={[styles.title, { color: textColor }]}>
             Terms of Service
-          </ThemedText>
+          </SizableText>
         </AnimatedContent>
         <AnimatedContent index={1}>
-          <ThemedText style={[styles.date, { color: mutedColor }]}>
+          <Paragraph style={[styles.date, { color: mutedColor }]}>
             Last updated: January 2025
-          </ThemedText>
+          </Paragraph>
         </AnimatedContent>
 
         <AnimatedContent index={2}>
           <View style={styles.section}>
-            <ThemedText type="defaultSemiBold" style={[styles.sectionTitle, { color: textColor }]}>
+            <Paragraph fontWeight="700" style={[styles.sectionTitle, { color: textColor }]}>
               1. Acceptance of Terms
-            </ThemedText>
-            <ThemedText style={[styles.paragraph, { color: mutedColor }]}>
+            </Paragraph>
+            <Paragraph style={[styles.paragraph, { color: mutedColor }]}>
               By accessing and using Don Puerto CRM, you accept and agree to be bound by the terms
               and provision of this agreement.
-            </ThemedText>
+            </Paragraph>
           </View>
         </AnimatedContent>
 
         <AnimatedContent index={3}>
           <View style={styles.section}>
-            <ThemedText type="defaultSemiBold" style={[styles.sectionTitle, { color: textColor }]}>
+            <Paragraph fontWeight="700" style={[styles.sectionTitle, { color: textColor }]}>
               2. Use License
-            </ThemedText>
-            <ThemedText style={[styles.paragraph, { color: mutedColor }]}>
+            </Paragraph>
+            <Paragraph style={[styles.paragraph, { color: mutedColor }]}>
               Permission is granted to temporarily use Don Puerto CRM for personal and commercial
               purposes. This is the grant of a license, not a transfer of title, and under this
               license you may not:
-            </ThemedText>
-            <ThemedText style={[styles.listItem, { color: mutedColor }]}>
+            </Paragraph>
+            <Paragraph style={[styles.listItem, { color: mutedColor }]}>
               • Modify or copy the materials
-            </ThemedText>
-            <ThemedText style={[styles.listItem, { color: mutedColor }]}>
+            </Paragraph>
+            <Paragraph style={[styles.listItem, { color: mutedColor }]}>
               • Use the materials for any commercial purpose or for any public display
-            </ThemedText>
-            <ThemedText style={[styles.listItem, { color: mutedColor }]}>
+            </Paragraph>
+            <Paragraph style={[styles.listItem, { color: mutedColor }]}>
               • Attempt to reverse engineer any software contained in the application
-            </ThemedText>
+            </Paragraph>
           </View>
         </AnimatedContent>
 
         <AnimatedContent index={4}>
           <View style={styles.section}>
-            <ThemedText type="defaultSemiBold" style={[styles.sectionTitle, { color: textColor }]}>
+            <Paragraph fontWeight="700" style={[styles.sectionTitle, { color: textColor }]}>
               3. Disclaimer
-            </ThemedText>
-            <ThemedText style={[styles.paragraph, { color: mutedColor }]}>
+            </Paragraph>
+            <Paragraph style={[styles.paragraph, { color: mutedColor }]}>
               The materials on Don Puerto CRM are provided on an &apos;as is&apos; basis. Don Puerto
               makes no warranties, expressed or implied, and hereby disclaims and negates all other
               warranties including, without limitation, implied warranties or conditions of
               merchantability, fitness for a particular purpose, or non-infringement of intellectual
               property or other violation of rights.
-            </ThemedText>
+            </Paragraph>
           </View>
         </AnimatedContent>
 
         <AnimatedContent index={5}>
           <View style={styles.section}>
-            <ThemedText type="defaultSemiBold" style={[styles.sectionTitle, { color: textColor }]}>
+            <Paragraph fontWeight="700" style={[styles.sectionTitle, { color: textColor }]}>
               4. Limitations
-            </ThemedText>
-            <ThemedText style={[styles.paragraph, { color: mutedColor }]}>
+            </Paragraph>
+            <Paragraph style={[styles.paragraph, { color: mutedColor }]}>
               In no event shall Don Puerto or its suppliers be liable for any damages (including,
               without limitation, damages for loss of data or profit, or due to business
               interruption) arising out of the use or inability to use the materials on Don Puerto
               CRM.
-            </ThemedText>
+            </Paragraph>
           </View>
         </AnimatedContent>
 
         <AnimatedContent index={6}>
           <View style={styles.section}>
-            <ThemedText type="defaultSemiBold" style={[styles.sectionTitle, { color: textColor }]}>
+            <Paragraph fontWeight="700" style={[styles.sectionTitle, { color: textColor }]}>
               5. Contact Information
-            </ThemedText>
-            <ThemedText style={[styles.paragraph, { color: mutedColor }]}>
+            </Paragraph>
+            <Paragraph style={[styles.paragraph, { color: mutedColor }]}>
               If you have any questions about these Terms of Service, please contact us at
               support@donpuerto.com
-            </ThemedText>
+            </Paragraph>
           </View>
         </AnimatedContent>
 
         <AnimatedContent index={7}>
-          <Button variant="outline" onPress={() => router.back()} style={styles.backButton}>
+          <Button variant="outlined" onPress={() => router.back()} style={styles.backButton}>
             <Text>Go Back</Text>
           </Button>
         </AnimatedContent>
       </ScrollView>
-    </ThemedView>
+    </View>
   );
 }
 

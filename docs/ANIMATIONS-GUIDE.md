@@ -79,7 +79,7 @@ Responds to navigation direction (forward/backward).
 
 ```tsx
 import { DirectionalPageTransition } from '@/interface/components/directional-page-transition';
-import { useRouteTransition } from '@/interface/hooks/use-route-transition';
+import { useRouteTransition } from '@/hooks/use-route-transition';
 
 export default function MyScreen() {
   const { direction } = useRouteTransition();

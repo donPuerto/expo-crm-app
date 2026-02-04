@@ -1,14 +1,22 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
-import { YStack, XStack, H1, Text, Button, ScrollView, Separator } from 'tamagui';
+import {
+  YStack,
+  XStack,
+  H1,
+  Text,
+  Button,
+  ScrollView,
+  Separator,
+  Input,
+} from '@/interface/primitives';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { Input } from '@/interface/primitives/input.tamagui';
 
 type User = {
   id: string;

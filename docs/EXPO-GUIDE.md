@@ -1374,12 +1374,11 @@ npx expo doctor              # Check for issues
 ### TypeScript Paths (`@/`)
 
 ```tsx
-// Instead of:
-import { ThemedView } from '../../components/themed-view';
+// Avoid relative imports like:
+import { View } from '../../some/relative/path';
 
-// Use:
-import { View } from '@tamagui/core';
-import { Button } from '@/interface/primitives/button';
+// Prefer path aliases + the single primitives surface:
+import { View, Button } from '@/interface/primitives';
 import { useAuthStore } from '@/features/auth/auth-store';
 import config from '@/tamagui/tamagui.config';
 ```

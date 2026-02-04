@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   ActivityList,
@@ -9,14 +9,13 @@ import {
   StatCard,
   type ActivityItem,
 } from '@/components/dashboard';
-import { ThemedView } from '@/interface/components/themed-view';
 import { adminDashboard } from '@/features/dashboard/definitions';
 
 export default function AdminDashboard() {
   const { title, subtitle, widgets, layout } = adminDashboard;
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <DashboardHeader title={title} subtitle={subtitle} />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <DashboardGrid columns={layout?.columns} gap={layout?.gap}>
@@ -50,7 +49,7 @@ export default function AdminDashboard() {
           })}
         </DashboardGrid>
       </ScrollView>
-    </ThemedView>
+    </View>
   );
 }
 

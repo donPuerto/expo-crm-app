@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { YStack, XStack, H1, Text } from 'tamagui';
+import { YStack, XStack, H1, Text } from '@/interface/primitives';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,

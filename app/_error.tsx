@@ -1,28 +1,31 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { ThemedText } from '@/interface/components/themed-text';
-import { ThemedView } from '@/interface/components/themed-view';
+import { Paragraph, SizableText, View } from '@/interface/primitives';
 
 export default function ErrorBoundary({ error, retry }: { error: Error; retry: () => void }) {
   const router = useRouter();
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>
+    <View style={styles.container}>
+      <SizableText size="$8" fontWeight="800" style={styles.title}>
         Something went wrong
-      </ThemedText>
+      </SizableText>
 
-      <ThemedText style={styles.message}>{error.message}</ThemedText>
+      <Paragraph style={styles.message}>{error.message}</Paragraph>
 
       <TouchableOpacity style={styles.button} onPress={retry}>
-        <ThemedText type="link">Try again</ThemedText>
+        <Paragraph color="$primary" textDecorationLine="underline">
+          Try again
+        </Paragraph>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={() => router.replace('/')}>
-        <ThemedText type="link">Go to home</ThemedText>
+        <Paragraph color="$primary" textDecorationLine="underline">
+          Go to home
+        </Paragraph>
       </TouchableOpacity>
-    </ThemedView>
+    </View>
   );
 }
 

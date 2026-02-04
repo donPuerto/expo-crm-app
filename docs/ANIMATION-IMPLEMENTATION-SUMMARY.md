@@ -82,7 +82,7 @@ Features:
 
 #### d. useRouteTransition Hook
 
-**File**: `src/interface/hooks/use-route-transition.ts`
+**File**: `src/hooks/use-route-transition.ts`
 
 Features:
 
@@ -262,9 +262,10 @@ src/interface/
 │   ├── directional-page-transition.tsx (new)
 │   ├── carousel-transition.tsx (new)
 │   └── page-transition-examples.tsx (new)
-├── hooks/
-│   └── use-route-transition.ts (new)
 └── transitions.ts (new - barrel export)
+
+src/hooks/
+└── use-route-transition.ts
 
 docs/
 └── ANIMATIONS-GUIDE.md (new)

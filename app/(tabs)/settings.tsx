@@ -1,8 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, Switch, View } from 'react-native';
 
-import { ThemedText } from '@/interface/components/themed-text';
-import { ThemedView } from '@/interface/components/themed-view';
+import { Paragraph, SizableText } from '@/interface/primitives';
 
 export default function SettingsScreen() {
   const [notifications, setNotifications] = React.useState(true);
@@ -10,58 +9,58 @@ export default function SettingsScreen() {
   const [emailAlerts, setEmailAlerts] = React.useState(false);
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.header}>
+    <View style={styles.container}>
+      <SizableText size="$8" fontWeight="800" style={styles.header}>
         Settings
-      </ThemedText>
+      </SizableText>
 
       <View style={styles.section}>
-        <ThemedText type="subtitle" style={styles.sectionHeader}>
+        <SizableText size="$6" fontWeight="700" style={styles.sectionHeader}>
           Profile
-        </ThemedText>
+        </SizableText>
         <Pressable style={styles.row}>
           <View>
-            <ThemedText type="defaultSemiBold">Alex Johnson</ThemedText>
-            <ThemedText style={styles.meta}>alex.johnson@company.com</ThemedText>
+            <Paragraph fontWeight="700">Alex Johnson</Paragraph>
+            <Paragraph style={styles.meta}>alex.johnson@company.com</Paragraph>
           </View>
-          <ThemedText style={styles.link}>Edit</ThemedText>
+          <Paragraph style={styles.link}>Edit</Paragraph>
         </Pressable>
       </View>
 
       <View style={styles.section}>
-        <ThemedText type="subtitle" style={styles.sectionHeader}>
+        <SizableText size="$6" fontWeight="700" style={styles.sectionHeader}>
           Notifications
-        </ThemedText>
+        </SizableText>
         <View style={styles.row}>
-          <ThemedText type="defaultSemiBold">Push notifications</ThemedText>
+          <Paragraph fontWeight="700">Push notifications</Paragraph>
           <Switch value={notifications} onValueChange={setNotifications} />
         </View>
         <View style={styles.row}>
-          <ThemedText type="defaultSemiBold">Email alerts</ThemedText>
+          <Paragraph fontWeight="700">Email alerts</Paragraph>
           <Switch value={emailAlerts} onValueChange={setEmailAlerts} />
         </View>
       </View>
 
       <View style={styles.section}>
-        <ThemedText type="subtitle" style={styles.sectionHeader}>
+        <SizableText size="$6" fontWeight="700" style={styles.sectionHeader}>
           Appearance
-        </ThemedText>
+        </SizableText>
         <View style={styles.row}>
-          <ThemedText type="defaultSemiBold">Dark mode</ThemedText>
+          <Paragraph fontWeight="700">Dark mode</Paragraph>
           <Switch value={darkMode} onValueChange={setDarkMode} />
         </View>
       </View>
 
       <View style={styles.section}>
-        <ThemedText type="subtitle" style={styles.sectionHeader}>
+        <SizableText size="$6" fontWeight="700" style={styles.sectionHeader}>
           About
-        </ThemedText>
+        </SizableText>
         <View style={styles.row}>
-          <ThemedText type="defaultSemiBold">Version</ThemedText>
-          <ThemedText style={styles.meta}>1.0.0</ThemedText>
+          <Paragraph fontWeight="700">Version</Paragraph>
+          <Paragraph style={styles.meta}>1.0.0</Paragraph>
         </View>
       </View>
-    </ThemedView>
+    </View>
   );
 }
 
