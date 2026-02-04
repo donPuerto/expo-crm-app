@@ -204,46 +204,6 @@ export default function RootLayout() {
           >
             <Stack.Screen name="splash" options={{ headerShown: false, animation: 'none' }} />
             <Stack.Screen name="welcome" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="(auth)/sign-in"
-              options={{
-                presentation: 'modal',
-                title: 'Sign In',
-                animation: 'slide_from_bottom',
-              }}
-            />
-            <Stack.Screen
-              name="(auth)/sign-up"
-              options={{
-                presentation: 'modal',
-                title: 'Sign Up',
-                animation: 'slide_from_bottom',
-              }}
-            />
-            <Stack.Screen
-              name="(auth)/forgot-password"
-              options={{
-                presentation: 'modal',
-                title: 'Forgot Password',
-                animation: 'slide_from_bottom',
-              }}
-            />
-            <Stack.Screen
-              name="(auth)/reset-password"
-              options={{
-                presentation: 'modal',
-                title: 'Reset Password',
-                animation: 'slide_from_bottom',
-              }}
-            />
-            <Stack.Screen
-              name="(auth)/sign-up/verify-email"
-              options={{
-                presentation: 'modal',
-                title: 'Verify Email',
-                animation: 'slide_from_bottom',
-              }}
-            />
             <Stack.Screen name="(crm)" options={{ headerShown: false }} />
             <Stack.Screen name="(dashboards)" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

@@ -21,15 +21,14 @@ Routes live in `app/` directory following Expo Router conventions:
 - `app/_layout.tsx` - Root layout with ThemeProvider, Stack navigator, and error boundary
 - `app/splash.tsx` - Initial splash screen
 - `app/welcome.tsx` - Welcome/landing screen
-- `app/(auth)/sign-in.tsx` - Sign-in screen
-- `app/(auth)/sign-up.tsx` - Sign-up screen
-- `app/(dashboard)/*` - Dashboard routes
+- `app/(crm)/` - CRM management routes
+- `app/(dashboards)/` - Dashboard routes
 - `app/(tabs)/_layout.tsx` - Tab navigator (Home, Explore)
 - `app/(modals)/user-profile.tsx` - User profile modal
 - `app/modal.tsx` - Generic modal screen
 - `app/+not-found.tsx` - 404 error page
 - `app/_error.tsx` - Global error boundary fallback
-- Route groups use parentheses: `(auth)`, `(tabs)`, `(dashboard)`, `(modals)` create logical groupings without adding to URL
+- Route groups use parentheses: `(tabs)`, `(crm)`, `(dashboards)`, `(modals)` create logical groupings without adding to URL
 - `unstable_settings.anchor` in root layout sets initial route to `splash`
 
 ### Supabase Backend Integration
@@ -85,14 +84,6 @@ Apply theme via `useThemeColor` hook, merge with style prop
 - `app/_error.tsx` - Global error boundary for all routes
 - `ErrorBoundary` component exported from `app/_layout.tsx` for inline error handling
 - Both use `ThemedView` and `ThemedText` for consistent styling
-
-### File-based Routes Structure
-
-- `app/(auth)/` - Authentication routes (sign-in, sign-up, password recovery)
-- `app/(tabs)/` - Tabbed navigation screens
-- `app/(crm)/` - CRM management routes
-- `app/(dashboards)/` - Dashboard routes
-- `app/(modals)/` - Modal screens
 
 ## Import Conventions
 
